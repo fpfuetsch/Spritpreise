@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -11,6 +12,8 @@ export default new Vuex.Store({
 
   },
   actions: {
-
+    priceUpdate() {
+      fetch('http://localhost:3000/update');
+    }
   }
 })

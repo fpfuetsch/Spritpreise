@@ -1,5 +1,5 @@
 DB Starten
-"C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe" --dbpath="./data/db"
+"C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe" --dbpath="./db"
 
 DB Connect Commandline
 "C:\Program Files\MongoDB\Server\4.0\bin\mongo.exe"
