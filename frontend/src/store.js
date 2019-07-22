@@ -15,10 +15,10 @@ export default new Vuex.Store({
   },
   actions: {
     priceUpdate() {
-      fetch('http://localhost:3000/update');
+      fetch('http://localhost:8080/update');
     },
     async addNewGasstation(context, id) {
-      const res = await fetch(`http://localhost:3000/addNewStation?id=${id}`);
+      const res = await fetch(`http://localhost:8080/addNewStation?id=${id}`);
       context.commit('setStationAddStatus', res.statusText)
     }
   }
