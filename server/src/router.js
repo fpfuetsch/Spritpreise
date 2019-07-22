@@ -10,7 +10,7 @@ const apiKey = process.env.API_KEY;
 
 router.get('/update', async (req, res) => {
   let gasStations = await GasStation.find().exec();
-  console.log(gasStations)
+
   gasStationIds = gasStations.map(station => station.stationId);
 
   const urlPrices = `${baseURL}prices.php?ids=${gasStationIds.join(',')}&apikey=${apiKey}`;
@@ -20,7 +20,7 @@ router.get('/update', async (req, res) => {
     let prices = data.prices;
     await gasStations.forEach(async s => {
       if(prices[s.stationId] != undefined && prices[s.stationId].status == 'open'){
-        let data = prices[stationId];
+        let data = prices[s.stationId];
         let priceSnapshot;
         if(data.e5) {
           priceSnapshot = new PriceSnapshot({
@@ -47,12 +47,14 @@ router.get('/update', async (req, res) => {
           if(err) {
             res.send(err);
           }
-          console.log('Station updated!')
+          console.log(`Station updated: ${s.stationId} - ${new Date().toLocaleTimeString()}`);
         });
       }
     });
+    res.send(data)
+  } else {
+    res.send('Fehler!')
   }
-  res.send(data)
 });
 
 router.get('/addNewStation', async (req, res) => {
