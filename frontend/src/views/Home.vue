@@ -2,17 +2,20 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <UpdateComponent/>
+    <AddStationComponent/>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import UpdateComponent from '@/components/Update.vue'
+
+import UpdateComponent from '@/components/update-stations.vue'
+import AddStationComponent from '@/components/add-station.vue'
 
 export default {
   name: 'home',
   components: {
-    UpdateComponent
+    UpdateComponent,
+    AddStationComponent
   }
 }
 </script>

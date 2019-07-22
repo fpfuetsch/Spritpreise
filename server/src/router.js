@@ -61,14 +61,18 @@ router.get('/addNewStation', async (req, res) => {
   const id = req.query.id;
 
   if(id == undefined) {
-    res.send('No station id provided!')
+    res.statusCode = 400;
+    res.statusMessage ='Bad Request: No station id provided!';
+    res.send()
     return;
   }
 
   const alreadyExists = await GasStation.exists({stationId: id});
 
   if(alreadyExists) {
-    res.send('Station already exists.')
+    res.statusCode = 200;
+    res.statusMessage = 'Station already exists.';
+    res.send();
     return;
   }
 
@@ -89,10 +93,13 @@ router.get('/addNewStation', async (req, res) => {
         res.send(err);
       }
       console.log('New Station persisted!')
-      res.send('Persited!')
+      res.statusMessage = 'Persited!';
+      res.send();
     });
   } else {
-    res.send('Fehler!')
+    res.statusCode = 400;
+    res.statusMessage = 'Station konnte nicht gefunden werden!';
+    res.send();
   }
 });
 
