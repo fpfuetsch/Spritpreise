@@ -57,6 +57,17 @@ router.get('/update', async (req, res) => {
   }
 });
 
+router.get('/getDiesel', async (req, res) => {
+  let gasStations = await GasStation.find().exec();
+  let prices = gasStations[0].diesel.map(priceObj => {
+    return {
+      timestamp: priceObj.timestamp,
+      price: priceObj.price
+    }
+  });
+  res.send(prices);
+});
+
 router.get('/addNewStation', async (req, res) => {
   const id = req.query.id;
 
