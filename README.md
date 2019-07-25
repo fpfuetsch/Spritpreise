@@ -6,3 +6,8 @@ DB Connect Commandline
 
 OIL Römhilder Stra d97df820-682a-4b91-8a39-0b1fbed6bac7
 OIL Kaltenbronner Weg 9e028191-ac05-46b8-a58b-6161a8452453
+
+Vuetify 2.0
+# npm
+$ npm install https://github.com/vuetifyjs/vue-cli-plugin-vuetify.git#dev --save-dev
+$ vue invoke vuetify

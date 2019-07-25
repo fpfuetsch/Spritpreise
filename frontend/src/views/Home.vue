@@ -1,21 +1,22 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <UpdateComponent/>
-    <AddStationComponent/>
-  </div>
+  <v-container fill-height>
+    <v-layout align-center justify-center column fill-height>
+        <add-station-component/>
+        <chart-component/>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
 
-import UpdateComponent from '@/components/update-stations.vue'
-import AddStationComponent from '@/components/add-station.vue'
+  import AddStationComponent from '@/components/add-station.vue'
+  import ChartComponent from '@/components/chart.vue'
 
-export default {
-  name: 'home',
-  components: {
-    UpdateComponent,
-    AddStationComponent
+  export default {
+    name: 'home',
+    components: {
+      AddStationComponent,
+      ChartComponent
+    }
   }
-}
 </script>
