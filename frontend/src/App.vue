@@ -36,7 +36,9 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Spritpreise</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn @click="handelClick()">Preise updaten</v-btn>
+      <v-toolbar-items>
+        <v-btn @click="handelClick()">Preise updaten</v-btn>
+      </v-toolbar-items>
     </v-app-bar>
 
     <v-content>
@@ -65,8 +67,7 @@
     methods: {
       handelClick: function() {
         this.$store.dispatch('priceUpdate');
-        this.$store.dispatch('fetchDiesel');
       }
-    }
+    },
   }
 </script>

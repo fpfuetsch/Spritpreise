@@ -57,15 +57,23 @@ router.get('/update', async (req, res) => {
   }
 });
 
-router.get('/getDiesel', async (req, res) => {
-  let gasStations = await GasStation.find().exec();
-  let prices = gasStations[0].diesel.map(priceObj => {
-    return {
-      timestamp: priceObj.timestamp,
-      price: priceObj.price
-    }
-  });
-  res.send(prices);
+router.get('/getStations', async (req, res) => {
+  let gasStations = await GasStation.find({}, {stationId: 1, name: 1, brand: 1, street: 1, city: 1, lat: 1, lng: 1}).exec();
+  res.send(gasStations);
+});
+
+router.get('/getPricesFor', async (req, res) => {
+  const id = req.query.id;
+
+  if(id == undefined) {
+    res.statusCode = 400;
+    res.statusMessage ='Bad Request: No station id provided!';
+    res.send()
+    return;
+  }
+
+  let gasStations = await GasStation.find({stationId: id}, {diesel: 1, e5: 1, e10: 1}).exec();
+  res.send(gasStations[0]);
 });
 
 router.get('/addNewStation', async (req, res) => {

@@ -1,10 +1,10 @@
 <template>
    <v-container>
-     <apexchart width="1000" type="line" :options="chartOptions" :series="series"></apexchart>
+     <apexchart width="100%" type="line" :options="chartOptions" :series="series"></apexchart>
    </v-container>
 </template>
 <script>
-  import { mapState } from 'vuex'
+  import { mapGetters, mapState } from 'vuex'
 
   export default {
     data: function() {
@@ -12,8 +12,11 @@
       }
     },
     computed: {
+     ...mapGetters([
+       'getPrices',
+     ]),
      ...mapState({
-       diesel: state => state.dieselData,
+       gasType: state => state.gasType,
      }),
      chartOptions: function() {
       return {
@@ -21,18 +24,25 @@
             id: 'vuechart-example'
           },
           xaxis: {
-            categories: this.diesel? this.diesel.map(val => val.timestamp) : []
+            type: "datetime",
+            categories: this.getPrices? this.getPrices.map(val => val.timestamp) : []
           }
 
         }
       },
       series: function() {
         return  [{
-          name: 'Diesel',
-          data: this.diesel? this.diesel.map(val => val.price) : [],
+          name: this.gasType ? this.gasType : 'Nicht gesetzt',
+          data: this.getPrices? this.getPrices.map(val => val.price) : [],
           colors:['#FFFFFF',]
         }]
       }
     }
   }
 </script>
+
+<style>
+.apexcharts-toolbar {
+  z-index: 0
+}
+</style>
