@@ -1,4 +1,6 @@
 /server/node_modules
 /server/.env
+/server/dist
+/frontend/dist
 /frontend/node_modules
 /db
