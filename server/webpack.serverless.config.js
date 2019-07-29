@@ -1,6 +1,5 @@
 const path = require("path")
 const fs = require("fs")
-const Dotenv = require('dotenv-webpack');
 
 // -- Webpack configuration --
 
@@ -61,10 +60,6 @@ config.module.rules = [
     test: /\.json$/,
     loader: "json",
   },
-]
-
-config.plugins = [
-  new Dotenv()
 ]
 
 module.exports = config
