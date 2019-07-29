@@ -13,7 +13,7 @@ config.entry = "./src/lambda.js"
 config.target = "node"
 
 // Node module dependencies should not be bundled
-config.externals = fs.readdirSync("node_modules")
+config.externals = fs.readdirSync("../node_modules")
   .reduce(function(acc, mod) {
     if (mod === ".bin") {
       return acc

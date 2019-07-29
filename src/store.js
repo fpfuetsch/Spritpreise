@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const API_URL = process.env.API_URL || 'http://localhost:8080';
+const API_URL = process.env.API_URL || 'https://spritpreise-ihk.netlify.com/.netlify/functions';
 
 export default new Vuex.Store({
   state: {
