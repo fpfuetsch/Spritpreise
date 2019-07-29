@@ -1,16 +1,26 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
+  "name": "ihk-test",
+  "version": "1.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve --port 3000",
+    "dev": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dev:api": "cd ./server && nodemon src/app.js",
+    "build:api": "cd ./server && webpack --mode production --config webpack.config.js",
+    "build:serverless": "cd ./server && webpack --mode production --config webpack.serverless.config.js"
   },
   "dependencies": {
+    "aws-serverless-express": "^3.3.6",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "dotenv-webpack": "^1.7.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.5",
+    "netlify-lambda": "^1.5.1",
+    "node-fetch": "^2.6.0",
+    "webpack": "^4.38.0",
     "apexcharts": "^3.8.3",
     "core-js": "^2.6.5",
-    "node-fetch": "^2.6.0",
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.4.0",
     "vue-router": "^3.0.3",
@@ -18,6 +28,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "nodemon": "^1.19.1",
+    "webpack-cli": "^3.3.6",
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-plugin-eslint": "^3.9.0",
     "@vue/cli-service": "^3.9.0",

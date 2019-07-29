@@ -14,5 +14,5 @@ E-Center WF ec9b160b-3ff4-4d2a-97eb-2f71ef1f8ba2
 
 Vuetify 2.0
 # npm
-$ npm install https://github.com/vuetifyjs/vue-cli-plugin-vuetify.git#dev --save-dev
+$ c
 $ vue invoke vuetify
