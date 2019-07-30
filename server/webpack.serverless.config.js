@@ -1,5 +1,6 @@
 const path = require("path")
 const fs = require("fs")
+const webpack = require('webpack')
 
 // -- Webpack configuration --
 
@@ -60,6 +61,10 @@ config.module.rules = [
     test: /\.json$/,
     loader: "json",
   },
+]
+
+config.plugins = [
+  new webpack.EnvironmentPlugin(['API_KEY', 'API_BASE_PATH', 'DB_URL'])
 ]
 
 module.exports = config
