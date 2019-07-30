@@ -4,41 +4,41 @@
    </v-container>
 </template>
 <script>
-  import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex';
 
-  export default {
-    data: function() {
+export default {
+  data: function() {
+    return {
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'getPrices',
+    ]),
+    ...mapState({
+      gasType: state => state.gasType,
+    }),
+    chartOptions: function() {
       return {
-      }
-    },
-    computed: {
-     ...mapGetters([
-       'getPrices',
-     ]),
-     ...mapState({
-       gasType: state => state.gasType,
-     }),
-     chartOptions: function() {
-      return {
-          chart: {
-            id: 'vuechart-example'
-          },
-          xaxis: {
-            type: "datetime",
-            categories: this.getPrices? this.getPrices.map(val => val.timestamp) : []
-          }
-
+        chart: {
+          id: 'vuechart-example'
+        },
+        xaxis: {
+          type: "datetime",
+          categories: this.getPrices? this.getPrices.map(val => val.timestamp) : []
         }
-      },
-      series: function() {
-        return  [{
-          name: this.gasType ? this.gasType : 'Nicht gesetzt',
-          data: this.getPrices? this.getPrices.map(val => val.price) : [],
-          colors:['#FFFFFF',]
-        }]
-      }
+
+      };
+    },
+    series: function() {
+      return  [{
+        name: this.gasType ? this.gasType : 'Nicht gesetzt',
+        data: this.getPrices? this.getPrices.map(val => val.price) : [],
+        colors: ['#FFFFFF',]
+      }];
     }
   }
+};
 </script>
 
 <style>

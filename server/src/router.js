@@ -11,32 +11,32 @@ const apiKey = process.env.API_KEY;
 router.get('/update', async (req, res) => {
   let gasStations = await GasStation.find().exec();
 
-  gasStationIds = gasStations.map(station => station.stationId);
+  let gasStationIds = gasStations.map(station => station.stationId);
 
   const urlPrices = `${baseURL}prices.php?ids=${gasStationIds.join(',')}&apikey=${apiKey}`;
   const data = await fetch(urlPrices).then(result => result.json()).catch(err => res.send(err));
 
-  if(data != undefined && data.ok) {
+  if (data != undefined && data.ok) {
     let prices = data.prices;
     await gasStations.forEach(async s => {
-      if(prices[s.stationId] != undefined && prices[s.stationId].status == 'open'){
+      if (prices[s.stationId] != undefined && prices[s.stationId].status == 'open') {
         let data = prices[s.stationId];
         let priceSnapshot;
-        if(data.e5) {
+        if (data.e5) {
           priceSnapshot = new PriceSnapshot({
             timestamp: new Date(),
             price: data.e5
           });
           s.e5.push(priceSnapshot);
         }
-        if(data.e10) {
+        if (data.e10) {
           priceSnapshot = new PriceSnapshot({
             timestamp: new Date(),
             price: data.e10
           });
           s.e10.push(priceSnapshot);
         }
-        if(data.diesel) {
+        if (data.diesel) {
           priceSnapshot = new PriceSnapshot({
             timestamp: new Date(),
             price: data.diesel
@@ -44,16 +44,16 @@ router.get('/update', async (req, res) => {
           s.diesel.push(priceSnapshot);
         }
         await s.save(err => {
-          if(err) {
+          if (err) {
             res.send(err);
           }
           console.log(`Station updated: ${s.stationId} - ${new Date().toLocaleTimeString()}`);
         });
       }
     });
-    res.send(data)
+    res.send(data);
   } else {
-    res.send('Fehler!')
+    res.send('Fehler!');
   }
 });
 
@@ -65,10 +65,10 @@ router.get('/getStations', async (req, res) => {
 router.get('/getPricesFor', async (req, res) => {
   const id = req.query.id;
 
-  if(id == undefined) {
+  if (id == undefined) {
     res.statusCode = 400;
     res.statusMessage ='Bad Request: No station id provided!';
-    res.send()
+    res.send();
     return;
   }
 
@@ -79,16 +79,16 @@ router.get('/getPricesFor', async (req, res) => {
 router.get('/addNewStation', async (req, res) => {
   const id = req.query.id;
 
-  if(id == undefined) {
+  if (id == undefined) {
     res.statusCode = 400;
     res.statusMessage ='Bad Request: No station id provided!';
-    res.send()
+    res.send();
     return;
   }
 
   const alreadyExists = await GasStation.exists({stationId: id});
 
-  if(alreadyExists) {
+  if (alreadyExists) {
     res.statusCode = 200;
     res.statusMessage = 'Station already exists.';
     res.send();
@@ -97,7 +97,7 @@ router.get('/addNewStation', async (req, res) => {
 
   const url = `${baseURL}detail.php?id=${id}&apikey=${apiKey}`;
   const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
-  if(data != undefined && data.ok) {
+  if (data != undefined && data.ok) {
     const station = new GasStation({
       stationId: data.station.id,
       name: data.station.name.trim(),
@@ -108,10 +108,10 @@ router.get('/addNewStation', async (req, res) => {
       lng: data.station.lng
     });
     station.save(err => {
-      if(err) {
+      if (err) {
         res.send(err);
       }
-      console.log('New Station persisted!')
+      console.log('New Station persisted!');
       res.statusMessage = 'Persited!';
       res.send();
     });

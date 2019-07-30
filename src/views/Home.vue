@@ -10,16 +10,16 @@
 
 <script>
 
-  import AddStationComponent from '@/components/add-station.vue';
-  import ChartComponent from '@/components/chart.vue';
-  import StationSelectComponent from '@/components/station-select.vue';
+import AddStationComponent from '@/components/add-station.vue';
+import ChartComponent from '@/components/chart.vue';
+import StationSelectComponent from '@/components/station-select.vue';
 
-  export default {
-    name: 'home',
-    components: {
-      AddStationComponent,
-      ChartComponent,
-      StationSelectComponent
-    }
+export default {
+  name: 'home',
+  components: {
+    AddStationComponent,
+    ChartComponent,
+    StationSelectComponent
   }
+};
 </script>

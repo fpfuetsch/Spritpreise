@@ -1,8 +1,8 @@
-import fetch from 'node-fetch'
-import Vue from 'vue'
-import Vuex from 'vuex'
+import fetch from 'node-fetch';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const API_URL = process.env.VUE_APP_API_URL || 'http://localhost:8080';
 
@@ -35,8 +35,8 @@ export default new Vuex.Store({
     getStationOptions: state => {
       return state.stations.length != 0 ? state.stations.map(station => {
         return {value: station,
-                text: station.name + ' ' + station.street
-               };
+          text: station.name + ' ' + station.street
+        };
       }) : [];
     },
     getPrices: state => {
@@ -49,7 +49,7 @@ export default new Vuex.Store({
     },
     async addNewGasstation(context, id) {
       const res = await fetch(`${API_URL}/addNewStation?id=${id}`);
-      context.commit('setStationAddStatus', res.statusText)
+      context.commit('setStationAddStatus', res.statusText);
     },
     async getStations(context) {
       const res = await fetch(`${API_URL}/getStations`).then(res => res.json());
@@ -60,4 +60,4 @@ export default new Vuex.Store({
       context.commit('setCurrentStationPrices', res);
     }
   }
-})
+});

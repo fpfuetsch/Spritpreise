@@ -22,7 +22,7 @@
 
 <script>
 
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'StationSelect',
@@ -31,7 +31,7 @@ export default {
       station: undefined,
       gasType: undefined,
       gasTypeOptions: ['Diesel', 'E5', 'E10'],
-    }
+    };
   },
   mounted() {
     this.$store.dispatch('getStations');
@@ -57,5 +57,5 @@ export default {
       currentStation: state => state.currentStation
     })
   }
-}
+};
 </script>

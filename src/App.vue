@@ -57,17 +57,17 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      source: String,
-    },
-    data: () => ({
-      drawer: null,
-    }),
-    methods: {
-      handelClick: function() {
-        this.$store.dispatch('priceUpdate');
-      }
-    },
-  }
+export default {
+  props: {
+    source: String,
+  },
+  data: () => ({
+    drawer: null,
+  }),
+  methods: {
+    handelClick: function() {
+      this.$store.dispatch('priceUpdate');
+    }
+  },
+};
 </script>

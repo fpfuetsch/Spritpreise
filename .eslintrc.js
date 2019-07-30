@@ -9,9 +9,17 @@ module.exports = {
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    "indent": ["error", 2],
+    "keyword-spacing": "error",
+    "key-spacing": "error",
+    "space-before-blocks": "error",
+    "no-trailing-spaces": "error",
+    "no-unreachable": "error",
+    "no-var": "error",
+    "semi": ["error", "always"]
   },
   parserOptions: {
     parser: 'babel-eslint'
   }
-}
+};

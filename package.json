@@ -5,6 +5,7 @@
     "dev": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "lint:api": "eslint server/src/** --fix",
     "dev:api": "cd ./server && nodemon src/app.local.js",
     "build:api": "cd ./server && webpack --mode production --config webpack.config.js",
     "build:serverless": "cd ./server && webpack --mode production --config webpack.serverless.config.js"

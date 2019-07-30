@@ -22,14 +22,14 @@
 
 <script>
 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'AddStation',
   data: () =>  {
     return {
       id: ''
-    }
+    };
   },
   methods: {
     requestAdd: function() {
@@ -40,11 +40,11 @@ export default {
     ])
   },
   computed: {
-     ...mapState({
-       status: state => state.stationAddStatus,
-     }),
-   }
-}
+    ...mapState({
+      status: state => state.stationAddStatus,
+    }),
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
