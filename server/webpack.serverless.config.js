@@ -36,7 +36,7 @@ config.node = {
 // Output files in the build/ folder
 config.output = {
   path: path.join(__dirname, "dist/serverless"),
-  filename: "bundle.js",
+  filename: "api.js",
 }
 
 config.resolve = {
