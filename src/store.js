@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const API_URL = process.env.VUE_APP_API_URL || 'http://localhost:8080';
+const API_URL = process.env.VUE_APP_API_URL || 'http://localhost:8080/api';
 
 export default new Vuex.Store({
   state: {
@@ -44,12 +44,14 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async priceUpdate() {
+    async priceUpdate({ dispatch, state }) {
       await fetch(`${API_URL}/update`);
+      if (state.currentStation) dispatch('getPrices', state.currentStation.stationId);
     },
     async addNewGasstation(context, id) {
       const res = await fetch(`${API_URL}/addNewStation?id=${id}`);
       context.commit('setStationAddStatus', res.statusText);
+      context.dispatch('getStations');
     },
     async getStations(context) {
       const res = await fetch(`${API_URL}/getStations`).then(res => res.json());
