@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/lambda.js',
   target: 'node',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'dist/serverless'),
     filename: 'api.js'
   },
   plugins: [
