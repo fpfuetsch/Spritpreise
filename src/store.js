@@ -46,7 +46,6 @@ export default new Vuex.Store({
   actions: {
     async priceUpdate({ dispatch, state }) {
       await fetch(`${API_URL}/update`);
-      console.log(state.currentStation)
       if (state.currentStation) dispatch('getPrices', state.currentStation.stationId);
     },
     async addNewGasstation(context, id) {
