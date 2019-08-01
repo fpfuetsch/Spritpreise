@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/20c41888-d0f8-4b1f-9d5f-5747776efdad/deploy-status)](https://app.netlify.com/sites/spritpreise-ihk/deploys)
+
 DB Starten
 "C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe" --dbpath="./db"
 
