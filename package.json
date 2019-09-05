@@ -39,7 +39,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "sass": "^1.17.4",
     "sass-loader": "^7.1.0",
-    "vue-cli-plugin-vuetify": "git+https://github.com/vuetifyjs/vue-cli-plugin-vuetify.git#dev",
+    "vue-cli-plugin-vuetify": "git+https://github.com/vuetifyjs/vue-cli-plugin-vuetify.git#master",
     "vue-template-compiler": "^2.6.10",
     "vuetify-loader": "^1.2.2"
   }
