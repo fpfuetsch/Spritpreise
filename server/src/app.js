@@ -6,8 +6,11 @@ const router = require('./router');
 const establishDBConnection = require('./database').establishConnection;
 const BASE_PATH = process.env.API_BASE_PATH || '/api';
 
-establishDBConnection();
-app.use(cors());
-app.use(BASE_PATH, router);
+const createApp = async () => {
+  await establishDBConnection();
+  app.use(cors());
+  app.use(BASE_PATH, router);
+  return app;
+};
 
-module.exports = app;
+module.exports = createApp;
