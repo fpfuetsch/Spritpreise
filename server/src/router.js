@@ -4,6 +4,10 @@ const fetch = require('node-fetch');
 
 const GasStation = require('./model').GasStation;
 const PriceSnapshot = require('./model').PriceSnapshot;
+const Stats = require('./model').Stats;
+const GasTypeStats = require('./model').GasTypeStats;
+const LowestPriceStats = require('./model').LowestPriceStats;
+const update = require('./notifier');
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
@@ -76,6 +80,11 @@ router.get('/getPricesFor', async (req, res) => {
   res.send(gasStations[0]);
 });
 
+router.get('/test', async (req, res) => {
+  update();
+  res.send('hello');
+});
+
 router.get('/addNewStation', async (req, res) => {
   const id = req.query.id;
 
@@ -98,6 +107,24 @@ router.get('/addNewStation', async (req, res) => {
   const url = `${baseURL}detail.php?id=${id}&apikey=${apiKey}`;
   const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
   if (data != undefined && data.ok) {
+    const lowestPriceStats = new LowestPriceStats ({
+      3: 100,
+      7: 100,
+      30: 100
+    });
+
+    const gasTypeStats = new GasTypeStats({
+      lowest: lowestPriceStats
+    });
+
+    let stats = new Stats({
+      e5: gasTypeStats,
+      e10: gasTypeStats,
+      diesel: gasTypeStats
+    });
+
+    //await stats.save();
+
     const station = new GasStation({
       stationId: data.station.id,
       name: data.station.name.trim(),
@@ -105,9 +132,11 @@ router.get('/addNewStation', async (req, res) => {
       street: data.station.street.trim(),
       city: data.station.place.trim(),
       lat: data.station.lat,
-      lng: data.station.lng
+      lng: data.station.lng,
+      stats: stats
     });
-    station.save(err => {
+
+    await station.save(err => {
       if (err) {
         res.send(err);
       }

@@ -11,7 +11,9 @@
     "build:serverless": "cd ./server && webpack --mode production --config webpack.serverless.config.js"
   },
   "dependencies": {
+    "apexcharts": "^3.8.3",
     "aws-serverless-express": "^3.3.6",
+    "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "dotenv-webpack": "^1.7.0",
@@ -19,14 +21,13 @@
     "mongoose": "^5.6.5",
     "netlify-lambda": "^1.5.1",
     "node-fetch": "^2.6.0",
-    "webpack": "^4.38.0",
-    "apexcharts": "^3.8.3",
-    "core-js": "^2.6.5",
+    "nodemailer": "^6.4.2",
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.4.0",
     "vue-router": "^3.0.3",
     "vuetify": "^2.0.0",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "webpack": "^4.38.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1",

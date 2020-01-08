@@ -3,6 +3,6 @@
 /server/dist
 /frontend/dist
 /frontend/node_modules
-/db
+/mongo_db
 node_modules
 dist
