@@ -14,7 +14,7 @@ const createApp = async () => {
   app.use(cors());
   app.use(BASE_PATH, router);
 
-  cron.schedule('*/2 * * * *', () => {
+  cron.schedule('*/15 * * * *', () => {
     updateAndNotify();
   });
 
