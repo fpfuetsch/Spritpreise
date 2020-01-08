@@ -12,13 +12,12 @@ const updateAndNotify = require('./notifier');
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
-
 router.get('/analyze', async (req, res) => {
   updateAndNotify();
   res.send('done');
 });
 
-router.get('/addNewSubscription', async (req, res) => {
+router.post('/subscription', async (req, res) => {
   const id = req.query.id;
   const type = req.query.type;
   const mail = req.query.mail;
@@ -47,7 +46,7 @@ router.get('/addNewSubscription', async (req, res) => {
   });
 });
 
-router.get('/addNewStation', async (req, res) => {
+router.post('/station', async (req, res) => {
   const id = req.query.id;
 
   if (id == undefined) {
@@ -70,6 +69,7 @@ router.get('/addNewStation', async (req, res) => {
   const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
   if (data != undefined && data.ok) {
     const lowestPriceStats = new LowestPriceStats ({
+      1: 100,
       3: 100,
       7: 100,
       30: 100
@@ -99,11 +99,13 @@ router.get('/addNewStation', async (req, res) => {
     await station.save(err => {
       if (err) {
         res.send(err);
+        return;
       }
       console.log('New Station persisted!');
       res.statusMessage = 'Persited!';
       res.send();
     });
+
   } else {
     res.statusCode = 400;
     res.statusMessage = 'Station konnte nicht gefunden werden!';

@@ -13,6 +13,7 @@ const priceSnapshotSchema = new Schema({
 });
 
 const lowestPriceStatsSchema = new Schema({
+  1: Number,
   3: Number,
   7: Number,
   30: Number

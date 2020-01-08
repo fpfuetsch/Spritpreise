@@ -16,7 +16,6 @@ const createApp = async () => {
 
   cron.schedule('*/2 * * * *', () => {
     updateAndNotify();
-    console.log('running a task every two minutes');
   });
 
   return app;
