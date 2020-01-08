@@ -20,19 +20,24 @@ router.get('/analyze', async (req, res) => {
 router.post('/subscription', async (req, res) => {
   const id = req.query.id;
   const type = req.query.type;
-  const mail = req.query.mail;
 
-  if (!id || !type || !mail) {
+  if (!id || !type) {
     res.statusCode = 400;
     res.statusMessage ='Bad Request';
     res.send();
     return;
   }
 
+  if (await Subscription.exists({stationId: id, type: type})) {
+    res.statusCode = 409;
+    res.statusMessage ='Already exists!';
+    res.send();
+    return;
+  }
+
   const subscription = new Subscription({
     stationId: id,
-    type: type,
-    mail: mail
+    type: type
   });
 
   await subscription.save(err => {
@@ -44,6 +49,24 @@ router.post('/subscription', async (req, res) => {
     res.statusMessage = 'Persited!';
     res.send();
   });
+});
+
+router.delete('/subscription', async (req, res) => {
+  const id = req.query.id;
+  const type = req.query.type;
+
+  if (!id || !type) {
+    res.statusCode = 400;
+    res.statusMessage ='Bad Request';
+    res.send();
+    return;
+  }
+
+  await Subscription.deleteOne({stationId: id, type: type}).exec();
+
+  console.log('Subscription deleted!');
+  res.statusMessage = 'Deleted!';
+  res.send();
 });
 
 router.post('/station', async (req, res) => {

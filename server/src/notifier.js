@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const nodemailer = require("nodemailer");
 
 const GasStation = require('./model').GasStation;
 const PriceSnapshot = require('./model').PriceSnapshot;
@@ -8,6 +7,10 @@ const Subscription = require('./model').Subscription;
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
+
+const telegram_token = process.env.TELEGRAM_TOKEN;
+const telegram_chat = process.env.TELEGRAM_CHAT;
+const telegram_chat_url = `https://api.telegram.org/bot${telegram_token}/sendMessage?chat_id=${telegram_chat}&parse_mode=html&text=`;
 
 const fetchPrices = async () => {
 
@@ -75,13 +78,13 @@ const calculateLowest = (station, type, days) => {
   return minPrice;
 };
 
-const generateMailText = async (alerts, stationId, type) => {
+const generateMessageText = async (alerts, stationId, type) => {
   const station = await GasStation.findOne({stationId: stationId}).exec();
-  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.\n\n`;
+  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.%0A%0A`;
   alerts.forEach(a => {
-    text += `Neues Minimum für Zeitraum: ${a.days} Tag(e)\n`;
-    text += `Vorheriges Minimum: ${a.lastLowest}\n`;
-    text += `Neues Minimum: ${a.newLowest}\n\n`;
+    text += `Neues Minimum für Zeitraum: ${a.days} Tag(e)%0A`;
+    text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>%0A`;
+    text += `Neues Minimum: <b>${a.newLowest}€</b>%0A%0A`;
   });
   return text;
 };
@@ -92,29 +95,13 @@ const notifySubscribers = async (alarms) => {
   subsciptions.forEach(async s => {
     const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
 
-    const transporter = nodemailer.createTransport({
-      host: "mail",
-      port: 25,
-      secure: false,
-    });
-
     if (matches.length > 0) {
-
-      console.log(`Sending mail to ${s.mail}`);
-
-      // send mail with defined transport object
-      await transporter.sendMail({
-        from: '"Fabian 👻" <spritpreis-alarm@pfuetsch.xyz>', // sender address
-        to: s.mail, // list of receivers
-        subject: "Spritpreis-Alarm!", // Subject line
-        text: await generateMailText(matches, s.stationId, s.type) // plain text body
-      });
+      await fetch(telegram_chat_url + await generateMessageText(matches, s.stationId, s.type)).then(result => result.json());
     }
   });
 };
 
 const removeSnapshots = async () => {
-  console.log('Removing PriceSnapshots that are older than 31 days...');
   let exeedingMs = 31 * 24 * 60 * 60 * 1000;
   let gasStations = await GasStation.find().exec();
   await gasStations.forEach(async s => {
@@ -126,8 +113,10 @@ const removeSnapshots = async () => {
 };
 
 const updateAndNotify = async () => {
-  console.log('Updating prices and notifying subscribers...');
-  await notifySubscribers(await fetchPrices());
+  console.log(`${new Date()} - updating prices`);
+  const alerts = await fetchPrices();
+  console.log(`${new Date()} - ${alerts.length} new alters`);
+  await notifySubscribers(alerts);
   await removeSnapshots();
 };
 

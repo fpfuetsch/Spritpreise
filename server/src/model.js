@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 const subscriptionSchema = new Schema({
   stationId: String,
-  type: String,
-  mail: String,
+  type: String
 });
 
 const priceSnapshotSchema = new Schema({
