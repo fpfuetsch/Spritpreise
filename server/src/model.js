@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const subscriptionSchema = new Schema({
+  stationId: String,
+  type: String,
+  mail: String,
+});
+
 const priceSnapshotSchema = new Schema({
   timestamp: Date,
   price: Number
@@ -42,8 +48,12 @@ const GasTypeStats = mongoose.model('GasTypeStats', gasTypeStatsSchema);
 const LowestPriceStats = mongoose.model('LowestPriceStats', lowestPriceStatsSchema);
 const GasStation = mongoose.model('GasStation', gasStationSchema);
 
+const Subscription = mongoose.model('Subscription', subscriptionSchema);
+
 module.exports.PriceSnapshot = PriceSnapshot;
 module.exports.GasStation = GasStation;
 module.exports.Stats = Stats;
 module.exports.GasTypeStats = GasTypeStats;
 module.exports.LowestPriceStats = LowestPriceStats;
+
+module.exports.Subscription = Subscription;

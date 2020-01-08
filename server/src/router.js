@@ -3,86 +3,48 @@ const router = express.Router();
 const fetch = require('node-fetch');
 
 const GasStation = require('./model').GasStation;
-const PriceSnapshot = require('./model').PriceSnapshot;
 const Stats = require('./model').Stats;
 const GasTypeStats = require('./model').GasTypeStats;
 const LowestPriceStats = require('./model').LowestPriceStats;
-const update = require('./notifier');
+const Subscription = require('./model').Subscription;
+const updateAndNotify = require('./notifier');
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
-router.get('/update', async (req, res) => {
-  let gasStations = await GasStation.find().exec();
 
-  let gasStationIds = gasStations.map(station => station.stationId);
-
-  const urlPrices = `${baseURL}prices.php?ids=${gasStationIds.join(',')}&apikey=${apiKey}`;
-  const data = await fetch(urlPrices).then(result => result.json()).catch(err => res.send(err));
-
-  if (data != undefined && data.ok) {
-    let prices = data.prices;
-    await gasStations.forEach(async s => {
-      if (prices[s.stationId] != undefined && prices[s.stationId].status == 'open') {
-        let data = prices[s.stationId];
-        let priceSnapshot;
-        if (data.e5) {
-          priceSnapshot = new PriceSnapshot({
-            timestamp: new Date(),
-            price: data.e5
-          });
-          s.e5.push(priceSnapshot);
-        }
-        if (data.e10) {
-          priceSnapshot = new PriceSnapshot({
-            timestamp: new Date(),
-            price: data.e10
-          });
-          s.e10.push(priceSnapshot);
-        }
-        if (data.diesel) {
-          priceSnapshot = new PriceSnapshot({
-            timestamp: new Date(),
-            price: data.diesel
-          });
-          s.diesel.push(priceSnapshot);
-        }
-        await s.save(err => {
-          if (err) {
-            res.send(err);
-          }
-          console.log(`Station updated: ${s.stationId} - ${new Date().toLocaleTimeString()}`);
-        });
-      }
-    });
-    res.send(data);
-  } else {
-    res.send('Fehler!');
-  }
+router.get('/analyze', async (req, res) => {
+  updateAndNotify();
+  res.send('done');
 });
 
-router.get('/getStations', async (req, res) => {
-  let gasStations = await GasStation.find({}, {stationId: 1, name: 1, brand: 1, street: 1, city: 1, lat: 1, lng: 1}).exec();
-  res.send(gasStations);
-});
-
-router.get('/getPricesFor', async (req, res) => {
+router.get('/addNewSubscription', async (req, res) => {
   const id = req.query.id;
+  const type = req.query.type;
+  const mail = req.query.mail;
 
-  if (id == undefined) {
+  if (!id || !type || !mail) {
     res.statusCode = 400;
-    res.statusMessage ='Bad Request: No station id provided!';
+    res.statusMessage ='Bad Request';
     res.send();
     return;
   }
 
-  let gasStations = await GasStation.find({stationId: id}, {diesel: 1, e5: 1, e10: 1}).exec();
-  res.send(gasStations[0]);
-});
+  const subscription = new Subscription({
+    stationId: id,
+    type: type,
+    mail: mail
+  });
 
-router.get('/test', async (req, res) => {
-  update();
-  res.send('hello');
+  await subscription.save(err => {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    console.log('New Subscription persisted!');
+    res.statusMessage = 'Persited!';
+    res.send();
+  });
 });
 
 router.get('/addNewStation', async (req, res) => {
@@ -122,8 +84,6 @@ router.get('/addNewStation', async (req, res) => {
       e10: gasTypeStats,
       diesel: gasTypeStats
     });
-
-    //await stats.save();
 
     const station = new GasStation({
       stationId: data.station.id,

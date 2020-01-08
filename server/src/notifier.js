@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const GasStation = require('./model').GasStation;
 const PriceSnapshot = require('./model').PriceSnapshot;
 const LowestPriceStats = require('./model').LowestPriceStats;
+const Subscription = require('./model').Subscription;
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
@@ -23,7 +24,7 @@ const fetchPrices = async () => {
     await Promise.all(gasStations.map(async s => {
       if (prices[s.stationId] != undefined && prices[s.stationId].status == 'open') {
         let data = prices[s.stationId];
-        const eps = 0.11;
+        const eps = 0;
         if (data.e5) {
 
           alarms = alarms.concat(await updatePrices(s, 'e5', data.e5 - eps));
@@ -83,10 +84,39 @@ const calculateLowest = (station, type, days) => {
   return minPrice;
 };
 
-const update = async () => {
+const notifySubscribers = async (alarms) => {
+  const subsciptions = await Subscription.find().exec();
+
+
+  subsciptions.forEach(async s => {
+    const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
+
+    const transporter = nodemailer.createTransport({
+      host: "mail",
+      port: 25,
+      secure: false,
+    });
+
+    if (matches.length > 0) {
+
+      // send mail with defined transport object
+      const info = await transporter.sendMail({
+        from: '"Fabian 👻" <spritpreis-alarm@pfuetsch.xyz>', // sender address
+        to: s.mail, // list of receivers
+        subject: "Spritpreis-Alarm!", // Subject line
+        text: matches, // plain text body
+      });
+
+      console.log("Message sent: %s", info.messageId);
+    }
+  });
+};
+
+const updateAndNotify = async () => {
   const alarms = await fetchPrices();
   console.log('alarms: ', alarms);
+  notifySubscribers(alarms);
 };
 
 
-module.exports = update;
+module.exports = updateAndNotify;
