@@ -104,7 +104,7 @@ const notifySubscribers = async (alarms) => {
         from: '"Fabian 👻" <spritpreis-alarm@pfuetsch.xyz>', // sender address
         to: s.mail, // list of receivers
         subject: "Spritpreis-Alarm!", // Subject line
-        text: matches, // plain text body
+        text: JSON.stringify(matches), // plain text body
       });
 
       console.log("Message sent: %s", info.messageId);
