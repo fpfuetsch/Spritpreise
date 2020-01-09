@@ -23,16 +23,17 @@ const fetchPrices = async () => {
 
   if (data != undefined && data.ok) {
     let prices = data.prices;
-    await Promise.all(gasStations.map(async s => {
+    for (let i = 0; i<gasStations.length; i++) {
+      const s = gasStations[i];
       if (prices[s.stationId] != undefined && prices[s.stationId].status == 'open') {
         const data = prices[s.stationId];
         for (let type of ['e5', 'e10', 'diesel']) {
           if (data[type]) {
-            alarms = alarms.concat(await updatePrices(s, type, data[type]));
+            alarms = alarms.concat(await updatePrices(s, type, data[type]-0.2));
           }
         }
       }
-    }));
+    }
     return alarms;
   } else {
     return [];
@@ -93,10 +94,8 @@ const generateMessageText = async (alerts, stationId, type) => {
 
 const notifySubscribers = async (alarms) => {
   const subsciptions = await Subscription.find().exec();
-
   subsciptions.forEach(async s => {
     const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
-    console.log(await generateMessageText(matches, s.stationId, s.type));
     if (matches.length > 0) {
       await fetch(telegram_chat_url + await generateMessageText(matches, s.stationId, s.type)).then(result => result.json());
     }
@@ -115,7 +114,6 @@ const removeSnapshots = async () => {
 };
 
 const updateAndNotify = async () => {
-  console.log(telegram_chat_url)
   console.log(`${new Date()} - updating prices`);
   const alerts = await fetchPrices();
   console.log(`${new Date()} - ${alerts.length} new alters`);
