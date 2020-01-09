@@ -80,12 +80,14 @@ const calculateLowest = (station, type, days) => {
 
 const generateMessageText = async (alerts, stationId, type) => {
   const station = await GasStation.findOne({stationId: stationId}).exec();
-  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.%0A%0A`;
+  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.LF`;
   alerts.forEach(a => {
-    text += `Neues Minimum für Zeitraum: ${a.days} Tag(e)%0A`;
-    text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>%0A`;
-    text += `Neues Minimum: <b>${a.newLowest}€</b>%0A%0A`;
+    text += `LFNeues Minimum für Zeitraum: ${a.days} Tag(e)LF`;
+    text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
+    text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
   });
+  text = encodeURIComponent(text);
+  text = text.replace(/LF/g, '%0A');
   return text;
 };
 
@@ -94,7 +96,7 @@ const notifySubscribers = async (alarms) => {
 
   subsciptions.forEach(async s => {
     const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
-
+    console.log(await generateMessageText(matches, s.stationId, s.type));
     if (matches.length > 0) {
       await fetch(telegram_chat_url + await generateMessageText(matches, s.stationId, s.type)).then(result => result.json());
     }
@@ -113,6 +115,7 @@ const removeSnapshots = async () => {
 };
 
 const updateAndNotify = async () => {
+  console.log(telegram_chat_url)
   console.log(`${new Date()} - updating prices`);
   const alerts = await fetchPrices();
   console.log(`${new Date()} - ${alerts.length} new alters`);
