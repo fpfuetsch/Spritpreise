@@ -29,7 +29,7 @@ const fetchPrices = async () => {
         const data = prices[s.stationId];
         for (let type of ['e5', 'e10', 'diesel']) {
           if (data[type]) {
-            alarms = alarms.concat(await updatePrices(s, type, data[type]-0.2));
+            alarms = alarms.concat(await updatePrices(s, type, data[type]));
           }
         }
       }
