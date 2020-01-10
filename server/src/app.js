@@ -12,6 +12,7 @@ const updateAndNotify = require('./notifier');
 const createApp = async () => {
   await establishDBConnection();
   app.use(cors());
+  app.use(express.json());
   app.use(BASE_PATH, router);
 
   cron.schedule('*/15 * * * *', () => {
