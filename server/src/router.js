@@ -13,7 +13,7 @@ const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
 router.post('/telegram/updates', async (req, res) => {
-  console(req.body);
+  console.log(req.body);
   res.send('ok');
 });
 
