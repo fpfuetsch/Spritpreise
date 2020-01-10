@@ -12,6 +12,11 @@ const updateAndNotify = require('./notifier');
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
+router.post('/telegram/updates', async (req, res) => {
+  console(req.body);
+  res.send('ok');
+});
+
 router.get('/analyze', async (req, res) => {
   updateAndNotify();
   res.send('done');
