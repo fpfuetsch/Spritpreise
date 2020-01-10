@@ -7,7 +7,7 @@ const establishDBConnection = require('./database').establishConnection;
 const BASE_PATH = process.env.API_BASE_PATH || '/api';
 const cron = require('node-cron');
 
-const updateAndNotify = require('./notifier');
+const updateAndNotify = require('./notifier').updateAndNotify;
 
 const createApp = async () => {
   await establishDBConnection();

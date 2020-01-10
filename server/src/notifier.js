@@ -9,8 +9,7 @@ const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
 const telegram_token = process.env.TELEGRAM_TOKEN;
-const telegram_chat = process.env.TELEGRAM_CHAT;
-const telegram_chat_url = `https://api.telegram.org/bot${telegram_token}/sendMessage?chat_id=${telegram_chat}&parse_mode=html&text=`;
+const telegram_chat_url = `https://api.telegram.org/bot${telegram_token}/sendMessage?`;
 
 const fetchPrices = async () => {
 
@@ -87,8 +86,6 @@ const generateMessageText = async (alerts, stationId, type) => {
     text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
     text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
   });
-  text = encodeURIComponent(text);
-  text = text.replace(/LF/g, '%0A');
   return text;
 };
 
@@ -97,9 +94,14 @@ const notifySubscribers = async (alarms) => {
   subsciptions.forEach(async s => {
     const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
     if (matches.length > 0) {
-      await fetch(telegram_chat_url + await generateMessageText(matches, s.stationId, s.type)).then(result => result.json());
+      await sendTelegramMessage(s.chatId, await generateMessageText(matches, s.stationId, s.type));
     }
   });
+};
+
+const sendTelegramMessage = async (chatId, message, ) => {
+  message = encodeURIComponent(message).replace(/LF/g, '%0A');
+  await fetch(`${telegram_chat_url}chat_id=${chatId}&parse_mode=html&text=${message}`);
 };
 
 const removeSnapshots = async () => {
@@ -121,4 +123,5 @@ const updateAndNotify = async () => {
   await removeSnapshots();
 };
 
-module.exports = updateAndNotify;
+module.exports.updateAndNotify = updateAndNotify;
+module.exports.sendTelegramMessage = sendTelegramMessage;

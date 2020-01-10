@@ -7,93 +7,165 @@ const Stats = require('./model').Stats;
 const GasTypeStats = require('./model').GasTypeStats;
 const LowestPriceStats = require('./model').LowestPriceStats;
 const Subscription = require('./model').Subscription;
-const updateAndNotify = require('./notifier');
+const sendTelegramMessage = require('./notifier').sendTelegramMessage;
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
 
 router.post('/telegram/updates', async (req, res) => {
-  console.log(req.body);
-  res.send('ok');
-});
-
-router.get('/analyze', async (req, res) => {
-  updateAndNotify();
-  res.send('done');
-});
-
-router.post('/subscription', async (req, res) => {
-  const id = req.query.id;
-  const type = req.query.type;
-
-  if (!id || !type) {
-    res.statusCode = 400;
-    res.statusMessage ='Bad Request';
+  const message = req.body.message;
+  if (!message) {
+    console.log('No message in update incuded!');
     res.send();
     return;
   }
+  const chat = message.chat;
+  if (message.text.startsWith('/start')) {
+    await sendTelegramMessage(chat.id, 'Seid gegrüßt!');
+  } else if (message.text.startsWith('/stop')) {
+    await removeAllSubscriptions(chat.id);
+  } else if (message.text.startsWith('/stations')) {
+    await listStations(chat.id);
+  } else if (message.text.startsWith('/addStation')) {
+    await addStations(chat.id, message.text);
+  } else if (message.text.startsWith('/subs')) {
+    await listSubscriptions(chat.id);
+  } else if (message.text.startsWith('/addSub')) {
+    await addSubscription(chat.id, message.text);
+  } else if (message.text.startsWith('/removeSub')) {
+    await removeSubscription(chat.id, message.text);
+  }
+  res.send();
+});
 
-  if (await Subscription.exists({stationId: id, type: type})) {
-    res.statusCode = 409;
-    res.statusMessage ='Already exists!';
-    res.send();
+const listStations = async (chatId) => {
+  let res = '';
+  const stations = await GasStation.find({}, {stationId: 1, name: 1, street: 1});
+  if (stations.length == 0) {
+    await sendTelegramMessage(chatId, 'Keine vorhanden!');
+  }
+  stations.forEach(s => {
+    res += `id: ${s.stationId}LFName: ${s.name}LFStraße: ${s.street}LFLF`;
+  });
+  await sendTelegramMessage(chatId, res);
+};
+
+const listSubscriptions = async (chatId) => {
+  let res = '';
+  const subs = await Subscription.find({chatId: chatId});
+  if (subs.length == 0) {
+    await sendTelegramMessage(chatId, 'Keine vorhanden!');
+  }
+  subs.forEach(s => {
+    res += `id: ${s.stationId}LFTyp: ${s.type}LFLF`;
+  });
+  await sendTelegramMessage(chatId, res);
+};
+
+const addSubscription = async (chatId, messageText) => {
+  const params = messageText.replace(/\/addSub/g, '').trim().split(' ');
+
+  if (params.length != 2) {
+    await sendTelegramMessage(chatId, 'Parameter fehlen oder inkorrekt!');
+    return;
+  }
+
+  const stationId = params[0];
+  const type = params[1].toLowerCase();
+
+  const stationExists = await GasStation.exists({stationId: stationId});
+  const typeExists = ['e5', 'e10', 'diesel'].includes(type);
+
+  if (!stationExists) {
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} wurde nicht gefunden!`);
+    return;
+  }
+
+  if (!typeExists) {
+    await sendTelegramMessage(chatId, `Kraftstoff: ${stationId} wird nicht unterstützt!`);
+    return;
+  }
+
+  if (await Subscription.exists({stationId: stationId, type: type, chatId: chatId})) {
+    await sendTelegramMessage(chatId, `Abon­ne­ment: ${stationId}, ${type} existiert bereits!`);
     return;
   }
 
   const subscription = new Subscription({
-    stationId: id,
-    type: type
+    stationId: stationId,
+    type: type,
+    chatId: chatId
   });
 
-  await subscription.save(err => {
+  await subscription.save(async err => {
     if (err) {
-      res.send(err);
+      console.error(err);
       return;
     }
     console.log('New Subscription persisted!');
-    res.statusMessage = 'Persited!';
-    res.send();
+    await sendTelegramMessage(chatId, `Erfolgreich!`);
   });
-});
+};
 
-router.delete('/subscription', async (req, res) => {
-  const id = req.query.id;
-  const type = req.query.type;
+const removeSubscription = async (chatId, messageText) => {
+  const params = messageText.replace(/\/removeSub/g, '').trim().split(' ');
 
-  if (!id || !type) {
-    res.statusCode = 400;
-    res.statusMessage ='Bad Request';
-    res.send();
+  if (params.length != 2) {
+    await sendTelegramMessage(chatId, 'Parameter fehlen oder inkorrekt!');
     return;
   }
 
-  await Subscription.deleteOne({stationId: id, type: type}).exec();
+  const stationId = params[0];
+  const type = params[1].toLowerCase();
+
+  const stationExists = await GasStation.exists({stationId: stationId});
+  const typeExists = ['e5', 'e10', 'diesel'].includes(type);
+
+  if (!stationExists) {
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} wurde nicht gefunden!`);
+    return;
+  }
+
+  if (!typeExists) {
+    await sendTelegramMessage(chatId, `Kraftstoff: ${stationId} wird nicht unterstützt!`);
+    return;
+  }
+
+  const subsExists = await Subscription.exists({stationId: stationId, type: type, chatId: chatId});
+
+  if (!subsExists) {
+    await sendTelegramMessage(chatId, `Abon­ne­ment: ${stationId}, ${type} existiert nicht!`);
+    return;
+  }
+
+  await Subscription.deleteOne({stationId: stationId, type: type, chatId: chatId}).exec();
 
   console.log('Subscription deleted!');
-  res.statusMessage = 'Deleted!';
-  res.send();
-});
+  await sendTelegramMessage(chatId, `Erfolgreich!`);
+};
 
-router.post('/station', async (req, res) => {
-  const id = req.query.id;
+const removeAllSubscriptions = async (chatId) => {
+  await Subscription.deleteMany({chatId: chatId});
+  await sendTelegramMessage(chatId, `Bye!`);
+  console.log('Remove all subscriptions!');
+};
 
-  if (id == undefined) {
-    res.statusCode = 400;
-    res.statusMessage ='Bad Request: No station id provided!';
-    res.send();
+const addStations = async (chatId, messageText) => {
+  const stationId = messageText.replace(/\/addStation/g, '').trim();
+
+  if (stationId == undefined || stationId.length == 0) {
+    await sendTelegramMessage(chatId, 'Tankstellen ID fehlt!');
     return;
   }
 
-  const alreadyExists = await GasStation.exists({stationId: id});
+  const alreadyExists = await GasStation.exists({stationId: stationId});
 
   if (alreadyExists) {
-    res.statusCode = 200;
-    res.statusMessage = 'Station already exists.';
-    res.send();
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} existiert bereits!`);
     return;
   }
 
-  const url = `${baseURL}detail.php?id=${id}&apikey=${apiKey}`;
+  const url = `${baseURL}detail.php?id=${stationId}&apikey=${apiKey}`;
   const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
   if (data != undefined && data.ok) {
     const lowestPriceStats = new LowestPriceStats ({
@@ -124,21 +196,18 @@ router.post('/station', async (req, res) => {
       stats: stats
     });
 
-    await station.save(err => {
+    await station.save(async err => {
       if (err) {
-        res.send(err);
+        console.error(err);
         return;
       }
       console.log('New Station persisted!');
-      res.statusMessage = 'Persited!';
-      res.send();
+      await sendTelegramMessage(chatId, `Erfolgreich!`);
     });
 
   } else {
-    res.statusCode = 400;
-    res.statusMessage = 'Station konnte nicht gefunden werden!';
-    res.send();
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} wurde nicht gefunden!`);
   }
-});
+};
 
 module.exports = router;
