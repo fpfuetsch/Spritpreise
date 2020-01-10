@@ -35,13 +35,13 @@ router.post('/telegram/updates/:token', async (req, res) => {
     await removeAllSubscriptions(chat.id);
   } else if (message.text.startsWith('/stations')) {
     await listStations(chat.id);
-  } else if (message.text.startsWith('/addStation')) {
+  } else if (message.text.startsWith('/add_station')) {
     await addStations(chat.id, message.text);
   } else if (message.text.startsWith('/subs')) {
     await listSubscriptions(chat.id);
-  } else if (message.text.startsWith('/addSub')) {
+  } else if (message.text.startsWith('/add_sub')) {
     await addSubscription(chat.id, message.text);
-  } else if (message.text.startsWith('/removeSub')) {
+  } else if (message.text.startsWith('/remove_sub')) {
     await removeSubscription(chat.id, message.text);
   }
   res.send();
@@ -72,7 +72,7 @@ const listSubscriptions = async (chatId) => {
 };
 
 const addSubscription = async (chatId, messageText) => {
-  const params = messageText.replace(/\/addSub/g, '').trim().split(' ');
+  const params = messageText.replace(/\/add_sub/g, '').trim().split(' ');
 
   if (params.length != 2) {
     await sendTelegramMessage(chatId, 'Parameter fehlen oder inkorrekt!');
@@ -117,7 +117,7 @@ const addSubscription = async (chatId, messageText) => {
 };
 
 const removeSubscription = async (chatId, messageText) => {
-  const params = messageText.replace(/\/removeSub/g, '').trim().split(' ');
+  const params = messageText.replace(/\/remove_sub/g, '').trim().split(' ');
 
   if (params.length != 2) {
     await sendTelegramMessage(chatId, 'Parameter fehlen oder inkorrekt!');
@@ -160,7 +160,7 @@ const removeAllSubscriptions = async (chatId) => {
 };
 
 const addStations = async (chatId, messageText) => {
-  const stationId = messageText.replace(/\/addStation/g, '').trim();
+  const stationId = messageText.replace(/\/add_station/g, '').trim();
 
   if (stationId == undefined || stationId.length == 0) {
     await sendTelegramMessage(chatId, 'Tankstellen ID fehlt!');
