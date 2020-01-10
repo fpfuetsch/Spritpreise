@@ -11,9 +11,18 @@ const sendTelegramMessage = require('./notifier').sendTelegramMessage;
 
 const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
 const apiKey = process.env.API_KEY;
+const telegram_token = process.env.TELEGRAM_TOKEN;
 
-router.post('/telegram/updates', async (req, res) => {
+router.post('/telegram/updates/:token', async (req, res) => {
   const message = req.body.message;
+  const token = req.params.token;
+
+  if (token != telegram_token) {
+    res.statusCode = 403;
+    res.send();
+    return;
+  }
+
   if (!message) {
     console.log('No message in update incuded!');
     res.send();
