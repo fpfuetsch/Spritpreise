@@ -73,8 +73,8 @@ const updatePrices = async (station, type, price) => {
 };
 
 const calculateLowest = (station, type, days) => {
-  const earliestDate = Date.now() - (days * 24 * 60 * 60 * 1000);
-  const minPrice = Math.min(...(station[type].filter(p => Date.now() - Date.parse(p.timestamp) < earliestDate).map(p => p.price)));
+  const deltaMs = days * 24 * 60 * 60 * 1000;
+  const minPrice = Math.min(...(station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price)));
   return minPrice;
 };
 
@@ -105,11 +105,11 @@ const sendTelegramMessage = async (chatId, message, ) => {
 };
 
 const removeSnapshots = async () => {
-  let exeedingMs = 31 * 24 * 60 * 60 * 1000;
+  let deltaMs = 31 * 24 * 60 * 60 * 1000;
   let gasStations = await GasStation.find().exec();
   await gasStations.forEach(async s => {
     ['e5', 'e10', 'diesel'].forEach(async t => {
-      s[t] = s[t].filter(snapshot => (Date.now() - Date.parse(snapshot.timestamp)) < exeedingMs);
+      s[t] = s[t].filter(snapshot => (Date.now() - Date.parse(snapshot.timestamp)) < deltaMs);
     });
     await s.save();
   });
