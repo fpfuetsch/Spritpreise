@@ -15,7 +15,7 @@ const createApp = async () => {
   app.use(express.json());
   app.use(BASE_PATH, router);
 
-  cron.schedule('*/2 * * * *', () => {
+  cron.schedule('*/15 * * * *', () => {
     updateAndNotify();
   });
 

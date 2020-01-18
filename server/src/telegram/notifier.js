@@ -49,7 +49,7 @@ const generateStatusText = async (stationId, type) => {
   let text = `LFStatus für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.LF`;
 
   if (station[type].length != 0) {
-    const latestSnapshot = station[type].sort((a, b) => Date.parse(a.timestamp) > Date.parse(b.timestamp))[0];
+    const latestSnapshot = station[type].sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))[0];
     const minutesAgo = Number.parseInt((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000));
     text += `LFLetzter Preis: ${latestSnapshot.price}€ (vor ${minutesAgo}min)LF`;
   } else {

@@ -86,7 +86,7 @@ const calculateLowest = (station, type, days) => {
 const calculateAverage = (station, type, days) => {
   const deltaMs = days * 24 * 60 * 60 * 1000;
   const prices = station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price);
-  const average = prices.reduce((a, b) => a + b) / prices.length;
+  const average = prices.reduce((a, b) => a + b, 0) / prices.length;
   return Number.parseFloat(average.toFixed(3));
 };
 
