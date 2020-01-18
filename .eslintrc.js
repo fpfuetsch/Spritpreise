@@ -17,7 +17,9 @@ module.exports = {
     "no-trailing-spaces": "error",
     "no-unreachable": "error",
     "no-var": "error",
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "sort-vars": "error",
+    "sort-imports": "error",
   },
   parserOptions: {
     parser: 'babel-eslint'

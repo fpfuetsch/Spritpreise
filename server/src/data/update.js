@@ -1,11 +1,11 @@
 
 const fetch = require('node-fetch');
-const PriceSnapshot = require('./model').PriceSnapshot;
-const LowestPriceStats = require('./model').LowestPriceStats;
-const GasStation = require('./model').GasStation;
+const PriceSnapshot = require('../model').PriceSnapshot;
+const LowestPriceStats = require('../model').LowestPriceStats;
+const GasStation = require('../model').GasStation;
 const Stats = require('../model').Stats;
 const GasTypeStats = require('../model').GasTypeStats;
-const notifySubscribers = require('../telegram/notifier').notifySubscribers;
+const notifyAlerts = require('../telegram/notifier').notifyAlerts;
 
 const BASE_URL= 'https://creativecommons.tankerkoenig.de/json/';
 const API_KEY = process.env.API_KEY;
@@ -92,7 +92,7 @@ const updateAndNotify = async () => {
   console.log(`${new Date()} - updating prices`);
   const alerts = await fetchPrices();
   console.log(`${new Date()} - ${alerts.length} new alters`);
-  await notifySubscribers(alerts);
+  await notifyAlerts(alerts);
   await removeSnapshots();
 };
 

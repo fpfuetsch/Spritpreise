@@ -2,7 +2,12 @@
 const GasStation = require('../model').GasStation;
 const Subscription = require('../model').Subscription;
 const sendTelegramMessage = require('./notifier').sendTelegramMessage;
-const persistStation = require('../data/update').sendTelegramMessage;
+const notifyStatus = require('./notifier').notifyStatus;
+const persistStation = require('../data/update').persistStation;
+
+const unknownCommand = async (chatId) => {
+  await sendTelegramMessage(chatId, 'Das verstehe ich nicht!');
+};
 
 const chatBegin = async (chatId) => {
   await sendTelegramMessage(chatId, 'Seid gegrüßt!');
@@ -12,6 +17,10 @@ const chatEnd = async (chatId) => {
   await Subscription.deleteMany({chatId: chatId});
   await sendTelegramMessage(chatId, `Bye!`);
   console.log('Remove all subscriptions!');
+};
+
+const status = async (chatId) => {
+  await notifyStatus(chatId);
 };
 
 const listStations = async (chatId) => {
@@ -146,9 +155,11 @@ const addStations = async (chatId, messageText) => {
 
 module.exports.chatBegin = chatBegin;
 module.exports.chatEnd = chatEnd;
+module.exports.status = status;
 module.exports.listStations = listStations;
 module.exports.listSubscriptions = listSubscriptions;
 module.exports.addSubscription = addSubscription;
 module.exports.listSubscriptions = listSubscriptions;
 module.exports.removeSubscription = removeSubscription;
 module.exports.addStations = addStations;
+module.exports.unknownCommand = unknownCommand;
