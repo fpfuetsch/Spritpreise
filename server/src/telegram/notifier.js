@@ -49,15 +49,17 @@ const generateStatusText = async (stationId, type) => {
   let text = `LFStatus für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.LF`;
 
   if (station[type].length != 0) {
-    const currentPrice = (station[type])[station[type].length-1].price;
-    text += `LFAktueller Preis: ${currentPrice}€LF`;
+    const latestSnapshot = station[type].sort((a, b) => Date.parse(a.timestamp) > Date.parse(b.timestamp))[0];
+    const minutesAgo = Number.parseInt((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000));
+    text += `LFLetzter Preis: ${latestSnapshot.price}€ (vor ${minutesAgo}min)LF`;
   } else {
-    text += `LFAktueller Preis: nicht vorhandenLF`;
+    text += `LFLetzter Preis: nicht vorhandenLF`;
   }
-  text += `Minimum 24h: ${station.stats[type].lowest['1']}€LF`;
-  text += `Minimum 3d: ${station.stats[type].lowest['3']}€LF`;
-  text += `Minimum 7d: ${station.stats[type].lowest['7']}€LF`;
-  text += `Minimum 30d: ${station.stats[type].lowest['30']}€LF`;
+  text += `Minimum / DurchschnittLF`;
+  text += `24h: ${station.stats[type].lowest['1']}€ / ${station.stats[type].average['1']}€LF`;
+  text += `3d: ${station.stats[type].lowest['3']}€ / ${station.stats[type].average['3']}€LF`;
+  text += `7d: ${station.stats[type].lowest['7']}€ / ${station.stats[type].average['7']}€LF`;
+  text += `30d: ${station.stats[type].lowest['30']}€ / ${station.stats[type].average['30']}€LF`;
   return text;
 };
 

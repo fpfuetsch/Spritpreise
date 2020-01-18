@@ -1,7 +1,7 @@
 
 const fetch = require('node-fetch');
 const PriceSnapshot = require('../model').PriceSnapshot;
-const LowestPriceStats = require('../model').LowestPriceStats;
+const PriceStats = require('../model').PriceStats;
 const GasStation = require('../model').GasStation;
 const Stats = require('../model').Stats;
 const GasTypeStats = require('../model').GasTypeStats;
@@ -60,11 +60,17 @@ const updatePrices = async (station, type, price) => {
   });
 
   station[type].unshift(priceSnapshot);
-  station.stats[type].lowest = new LowestPriceStats({
+  station.stats[type].lowest = new PriceStats({
     1: calculateLowest(station, type, 1),
     3: calculateLowest(station, type, 3),
     7: calculateLowest(station, type, 7),
     30: calculateLowest(station, type, 30),
+  });
+  station.stats[type].average = new PriceStats({
+    1: calculateAverage(station, type, 1),
+    3: calculateAverage(station, type, 3),
+    7: calculateAverage(station, type, 7),
+    30: calculateAverage(station, type, 30),
   });
 
   await station.save();
@@ -75,6 +81,13 @@ const calculateLowest = (station, type, days) => {
   const deltaMs = days * 24 * 60 * 60 * 1000;
   const minPrice = Math.min(...(station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price)));
   return minPrice;
+};
+
+const calculateAverage = (station, type, days) => {
+  const deltaMs = days * 24 * 60 * 60 * 1000;
+  const prices = station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price);
+  const average = prices.reduce((a, b) => a + b) / prices.length;
+  return Number.parseFloat(average.toFixed(3));
 };
 
 const removeSnapshots = async () => {
@@ -107,7 +120,7 @@ const persistStation = async (stationId) => {
   const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
 
   if (data != undefined && data.ok) {
-    const lowestPriceStats = new LowestPriceStats ({
+    const priceStats = new PriceStats ({
       1: 100,
       3: 100,
       7: 100,
@@ -115,7 +128,8 @@ const persistStation = async (stationId) => {
     });
 
     const gasTypeStats = new GasTypeStats({
-      lowest: lowestPriceStats
+      lowest: priceStats,
+      average: priceStats,
     });
 
     let stats = new Stats({

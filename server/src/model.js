@@ -12,7 +12,7 @@ const priceSnapshotSchema = new Schema({
   price: Number
 });
 
-const lowestPriceStatsSchema = new Schema({
+const priceStatsSchema = new Schema({
   1: Number,
   3: Number,
   7: Number,
@@ -20,7 +20,8 @@ const lowestPriceStatsSchema = new Schema({
 });
 
 const gasTypeStatsSchema = new Schema({
-  lowest: lowestPriceStatsSchema
+  lowest: priceStatsSchema,
+  average: priceStatsSchema,
 });
 
 const statsSchema = new Schema({
@@ -46,7 +47,7 @@ const gasStationSchema = new Schema({
 const PriceSnapshot = mongoose.model('PriceSnapshot', priceSnapshotSchema);
 const Stats = mongoose.model('Stats', statsSchema);
 const GasTypeStats = mongoose.model('GasTypeStats', gasTypeStatsSchema);
-const LowestPriceStats = mongoose.model('LowestPriceStats', lowestPriceStatsSchema);
+const PriceStats = mongoose.model('LowestPriceStats', priceStatsSchema);
 const GasStation = mongoose.model('GasStation', gasStationSchema);
 
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
@@ -55,6 +56,6 @@ module.exports.PriceSnapshot = PriceSnapshot;
 module.exports.GasStation = GasStation;
 module.exports.Stats = Stats;
 module.exports.GasTypeStats = GasTypeStats;
-module.exports.LowestPriceStats = LowestPriceStats;
+module.exports.PriceStats = PriceStats;
 
 module.exports.Subscription = Subscription;
