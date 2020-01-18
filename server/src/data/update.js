@@ -1,23 +1,22 @@
-const fetch = require('node-fetch');
 
-const GasStation = require('./model').GasStation;
+const fetch = require('node-fetch');
 const PriceSnapshot = require('./model').PriceSnapshot;
 const LowestPriceStats = require('./model').LowestPriceStats;
-const Subscription = require('./model').Subscription;
+const GasStation = require('./model').GasStation;
+const Stats = require('../model').Stats;
+const GasTypeStats = require('../model').GasTypeStats;
+const notifySubscribers = require('../telegram/notifier').notifySubscribers;
 
-const baseURL= 'https://creativecommons.tankerkoenig.de/json/';
-const apiKey = process.env.API_KEY;
-
-const telegram_token = process.env.TELEGRAM_TOKEN;
-const telegram_chat_url = `https://api.telegram.org/bot${telegram_token}/sendMessage?`;
+const BASE_URL= 'https://creativecommons.tankerkoenig.de/json/';
+const API_KEY = process.env.API_KEY;
+const GAS_TYPES = ['e5', 'e10', 'diesel'];
 
 const fetchPrices = async () => {
-
   let alarms = [];
   let gasStations = await GasStation.find().exec();
   let gasStationIds = gasStations.map(station => station.stationId);
 
-  const urlPrices = `${baseURL}prices.php?ids=${gasStationIds.join(',')}&apikey=${apiKey}`;
+  const urlPrices = `${BASE_URL}prices.php?ids=${gasStationIds.join(',')}&apikey=${API_KEY}`;
   const data = await fetch(urlPrices).then(result => result.json()).catch(err => console.error(err));
 
   if (data != undefined && data.ok) {
@@ -26,7 +25,7 @@ const fetchPrices = async () => {
       const s = gasStations[i];
       if (prices[s.stationId] != undefined && prices[s.stationId].status == 'open') {
         const data = prices[s.stationId];
-        for (let type of ['e5', 'e10', 'diesel']) {
+        for (let type of GAS_TYPES) {
           if (data[type]) {
             alarms = alarms.concat(await updatePrices(s, type, data[type]));
           }
@@ -78,37 +77,11 @@ const calculateLowest = (station, type, days) => {
   return minPrice;
 };
 
-const generateMessageText = async (alerts, stationId, type) => {
-  const station = await GasStation.findOne({stationId: stationId}).exec();
-  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.LF`;
-  alerts.forEach(a => {
-    text += `LFNeues Minimum für Zeitraum: ${a.days} Tag(e)LF`;
-    text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
-    text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
-  });
-  return text;
-};
-
-const notifySubscribers = async (alarms) => {
-  const subsciptions = await Subscription.find().exec();
-  subsciptions.forEach(async s => {
-    const matches = alarms.filter(a => a.stationId == s.stationId && a.type == s.type);
-    if (matches.length > 0) {
-      await sendTelegramMessage(s.chatId, await generateMessageText(matches, s.stationId, s.type));
-    }
-  });
-};
-
-const sendTelegramMessage = async (chatId, message, ) => {
-  message = encodeURIComponent(message).replace(/LF/g, '%0A');
-  await fetch(`${telegram_chat_url}chat_id=${chatId}&parse_mode=html&text=${message}`);
-};
-
 const removeSnapshots = async () => {
   let deltaMs = 31 * 24 * 60 * 60 * 1000;
   let gasStations = await GasStation.find().exec();
   await gasStations.forEach(async s => {
-    ['e5', 'e10', 'diesel'].forEach(async t => {
+    GAS_TYPES.forEach(async t => {
       s[t] = s[t].filter(snapshot => (Date.now() - Date.parse(snapshot.timestamp)) < deltaMs);
     });
     await s.save();
@@ -123,5 +96,58 @@ const updateAndNotify = async () => {
   await removeSnapshots();
 };
 
+const persistStation = async (stationId) => {
+  const alreadyExists = await GasStation.exists({stationId: stationId});
+
+  if (alreadyExists) {
+    return 'conflict';
+  }
+
+  const url = `${BASE_URL}detail.php?id=${stationId}&apikey=${API_KEY}`;
+  const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
+
+  if (data != undefined && data.ok) {
+    const lowestPriceStats = new LowestPriceStats ({
+      1: 100,
+      3: 100,
+      7: 100,
+      30: 100
+    });
+
+    const gasTypeStats = new GasTypeStats({
+      lowest: lowestPriceStats
+    });
+
+    let stats = new Stats({
+      e5: gasTypeStats,
+      e10: gasTypeStats,
+      diesel: gasTypeStats
+    });
+
+    const station = new GasStation({
+      stationId: data.station.id,
+      name: data.station.name.trim(),
+      brand: data.station.brand.trim(),
+      street: data.station.street.trim(),
+      city: data.station.place.trim(),
+      lat: data.station.lat,
+      lng: data.station.lng,
+      stats: stats
+    });
+
+    await station.save(async err => {
+      if (err) {
+        console.error(err);
+        return 'error';
+      }
+      console.log('New Station persisted!');
+      return 'done';
+    });
+
+  } else {
+    return 'not found';
+  }
+};
+
+module.exports.persistStation = persistStation;
 module.exports.updateAndNotify = updateAndNotify;
-module.exports.sendTelegramMessage = sendTelegramMessage;
