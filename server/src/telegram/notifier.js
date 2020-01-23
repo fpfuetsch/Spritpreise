@@ -56,10 +56,10 @@ const generateStatusText = async (stationId, type) => {
     text += `LFLetzter Preis: nicht vorhandenLF`;
   }
   text += `Minimum / DurchschnittLF`;
-  text += `24h: ${station.stats[type].lowest['1']}€ / ${station.stats[type].average['1']}€LF`;
-  text += `3d: ${station.stats[type].lowest['3']}€ / ${station.stats[type].average['3']}€LF`;
-  text += `7d: ${station.stats[type].lowest['7']}€ / ${station.stats[type].average['7']}€LF`;
-  text += `30d: ${station.stats[type].lowest['30']}€ / ${station.stats[type].average['30']}€LF`;
+  text += `24h: <b>${station.stats[type].lowest['1']}€</b> / <b>${station.stats[type].average['1']}€</b>LF`;
+  text += `3d: <b>${station.stats[type].lowest['3']}€</b> / <b>${station.stats[type].average['3']}€</b>LF`;
+  text += `7d: <b>${station.stats[type].lowest['7']}€</b> / <b>${station.stats[type].average['7']}€</b>LF`;
+  text += `30d: <b>${station.stats[type].lowest['30']}€</b> / <b>${station.stats[type].average['30']}€</b>LF`;
   return text;
 };
 
