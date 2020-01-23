@@ -51,7 +51,7 @@ const generateStatusText = async (stationId, type) => {
   if (station[type].length != 0) {
     const latestSnapshot = station[type].sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))[0];
     const minutesAgo = Number.parseInt((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000));
-    text += `LFLetzter Preis: ${latestSnapshot.price}€ (vor ${minutesAgo}min)LF`;
+    text += `LFLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)LF`;
   } else {
     text += `LFLetzter Preis: nicht vorhandenLF`;
   }
