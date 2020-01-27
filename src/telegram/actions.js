@@ -41,8 +41,9 @@ const listSubscriptions = async (chatId) => {
   if (subs.length == 0) {
     await sendTelegramMessage(chatId, 'Keine vorhanden!');
   }
-  subs.forEach(s => {
-    res += `ID: ${s.stationId}LFName: ${s.name}LFStraße: ${s.street}LFTyp: ${s.type}LFLF`;
+  subs.forEach(async s => {
+    const station = await GasStation.findOne({stationId: s.stationId});
+    res += `ID: ${s.stationId}LFName: ${station.name}LFStraße: ${station.street}LFTyp: ${s.type}LFLF`;
   });
   await sendTelegramMessage(chatId, res);
 };
