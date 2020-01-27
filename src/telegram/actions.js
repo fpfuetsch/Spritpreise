@@ -30,7 +30,7 @@ const listStations = async (chatId) => {
     await sendTelegramMessage(chatId, 'Keine vorhanden!');
   }
   stations.forEach(s => {
-    res += `id: ${s.stationId}LFName: ${s.name}LFStraße: ${s.street}LFLF`;
+    res += `ID: ${s.stationId}LFName: ${s.name}LFStraße: ${s.street}LFLF`;
   });
   await sendTelegramMessage(chatId, res);
 };
@@ -42,7 +42,7 @@ const listSubscriptions = async (chatId) => {
     await sendTelegramMessage(chatId, 'Keine vorhanden!');
   }
   subs.forEach(s => {
-    res += `id: ${s.stationId}LFTyp: ${s.type}LFLF`;
+    res += `ID: ${s.stationId}LFName: ${s.name}LFStraße: ${s.street}LFTyp: ${s.type}LFLF`;
   });
   await sendTelegramMessage(chatId, res);
 };
