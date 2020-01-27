@@ -4,6 +4,7 @@ const Subscription = require('../model').Subscription;
 const sendTelegramMessage = require('./notifier').sendTelegramMessage;
 const notifyStatus = require('./notifier').notifyStatus;
 const persistStation = require('../data/update').persistStation;
+const findStations = require('../data/update').findStations;
 
 const unknownCommand = async (chatId) => {
   await sendTelegramMessage(chatId, 'Das verstehe ich nicht!');
@@ -168,6 +169,19 @@ const addStations = async (chatId, messageText) => {
   }
 };
 
+const findStationsByLocation = async (chatId, location) => {
+  const stations = await findStations(location);
+  if (stations.length == 0) {
+    await sendTelegramMessage(chatId, `Keine Tankstellen in der Umgebung gefunden!`);
+  } else {
+    let text = `Tankstellen in der Umgebung:LFLF`;
+    for (let s of stations) {
+      text += `ID: ${s.id}LFName: ${s.name}LFStraße: ${s.street}LFLF`;
+    }
+    await sendTelegramMessage(chatId, text);
+  }
+};
+
 module.exports.chatBegin = chatBegin;
 module.exports.chatEnd = chatEnd;
 module.exports.status = status;
@@ -178,3 +192,4 @@ module.exports.listSubscriptions = listSubscriptions;
 module.exports.removeSubscription = removeSubscription;
 module.exports.addStations = addStations;
 module.exports.unknownCommand = unknownCommand;
+module.exports.findStationsByLocation = findStationsByLocation;

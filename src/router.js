@@ -10,6 +10,7 @@ const listSubscriptions = require('./telegram/actions').listSubscriptions;
 const addSubscription = require('./telegram/actions').addSubscription;
 const removeSubscription = require('./telegram/actions').removeSubscription;
 const unknownCommand = require('./telegram/actions').unknownCommand;
+const findStationsByLocation = require('./telegram/actions').findStationsByLocation;
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_TOKEN;
 
@@ -29,6 +30,11 @@ router.post('/telegram/updates/:token', async (req, res) => {
     return;
   }
   const chat = message.chat;
+  if (message.location) {
+    await findStationsByLocation(chat.id, message.location);
+    res.send();
+    return;
+  }
   if (message.text.startsWith('/start')) {
     await chatBegin(chat.id);
   } else if (message.text.startsWith('/stop')) {
