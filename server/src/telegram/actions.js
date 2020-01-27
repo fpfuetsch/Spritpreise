@@ -55,14 +55,19 @@ const addSubscription = async (chatId, messageText) => {
     return;
   }
 
-  const stationId = params[0];
+  let stationId = params[0];
   const type = params[1].toLowerCase();
 
-  const stationExists = await GasStation.exists({stationId: stationId});
+  const stationCount = await GasStation.countDocuments({stationId: new RegExp(stationId)});
   const typeExists = ['e5', 'e10', 'diesel'].includes(type);
 
-  if (!stationExists) {
+  if (stationCount == 0) {
     await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} wurde nicht gefunden!`);
+    return;
+  }
+
+  if (stationCount > 1) {
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} konnte nicht eindeutig identifiziert werden!`);
     return;
   }
 
@@ -70,6 +75,8 @@ const addSubscription = async (chatId, messageText) => {
     await sendTelegramMessage(chatId, `Kraftstoff: ${stationId} wird nicht unterstützt!`);
     return;
   }
+
+  stationId = await GasStation.findOne({stationId: new RegExp(stationId)}, {stationId: 1}).then(s => s.stationId);
 
   if (await Subscription.exists({stationId: stationId, type: type, chatId: chatId})) {
     await sendTelegramMessage(chatId, `Abon­ne­ment: ${stationId}, ${type} existiert bereits!`);
@@ -100,14 +107,19 @@ const removeSubscription = async (chatId, messageText) => {
     return;
   }
 
-  const stationId = params[0];
+  let stationId = params[0];
   const type = params[1].toLowerCase();
 
-  const stationExists = await GasStation.exists({stationId: stationId});
+  const stationCount = await GasStation.countDocuments({stationId: new RegExp(stationId)});
   const typeExists = ['e5', 'e10', 'diesel'].includes(type);
 
-  if (!stationExists) {
+  if (stationCount == 0) {
     await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} wurde nicht gefunden!`);
+    return;
+  }
+
+  if (stationCount > 1) {
+    await sendTelegramMessage(chatId, `Tankstellen mit ID: ${stationId} konnte nicht eindeutig identifiziert werden!`);
     return;
   }
 
@@ -115,6 +127,8 @@ const removeSubscription = async (chatId, messageText) => {
     await sendTelegramMessage(chatId, `Kraftstoff: ${stationId} wird nicht unterstützt!`);
     return;
   }
+
+  stationId = await GasStation.findOne({stationId: new RegExp(stationId)}, {stationId: 1}).then(s => s.stationId);
 
   const subsExists = await Subscription.exists({stationId: stationId, type: type, chatId: chatId});
 
