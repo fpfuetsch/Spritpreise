@@ -13,7 +13,7 @@ RUN npm ci
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY ./server .
+COPY . .
 
 EXPOSE 8080
 CMD [ "node", "src/app.local.js" ]

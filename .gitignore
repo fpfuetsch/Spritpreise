@@ -1,8 +1,6 @@
-/server/node_modules
-/server/.env
-/server/dist
-/frontend/dist
-/frontend/node_modules
-/mongo_db
+/.env
+/start_db.sh
+dist
+mongo_db
 node_modules
 dist

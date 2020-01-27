@@ -10,7 +10,7 @@ module.exports = {
     libraryTarget: 'commonjs',
   },
   plugins: [
-    new webpack.EnvironmentPlugin(['API_KEY', 'API_BASE_PATH', 'DB_URL'])
+    new webpack.EnvironmentPlugin(['API_KEY', 'API_BASE_PATH', 'DB_URL', 'TELEGRAM_TOKEN'])
   ],
   externals: [
     /^(?!\.|\/).+/i,
