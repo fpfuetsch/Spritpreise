@@ -1,20 +1,44 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/20c41888-d0f8-4b1f-9d5f-5747776efdad/deploy-status)](https://app.netlify.com/sites/spritpreise-ihk/deploys)
+# Telegram Spritpreis Bot
 
-DB Starten
-"C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe" --dbpath="./db"
+Telegram bot that notifies about relevant price changes of subscribed gas stations using the Tankerkönig API.
 
-DB Connect Commandline
-"C:\Program Files\MongoDB\Server\4.0\bin\mongo.exe"
+<b>Currently only the German language is supported.<b>
 
-OIL Römhilder Stra d97df820-682a-4b91-8a39-0b1fbed6bac7
-OIL Kaltenbronner Weg 9e028191-ac05-46b8-a58b-6161a8452453
-OIL WF 7da87e52-0425-480f-b170-00ae8be3d02c
-ARAL WF ce6f826c-06a0-4759-9a8c-9e64cd4163cf
-ESSO WF c2172d81-e049-4bb5-bc96-bfa0da2ed055
-E-Center WF ec9b160b-3ff4-4d2a-97eb-2f71ef1f8ba2
+# Environment Variables
 
+* API_KEY - API Token for Tankerkoenig
+* DB_URL - Mongo database URL
+* SERVER_PORT - Server port
+* API_BASE_PATH - API base path
+* TELEGRAM_TOKEN - Telegram bot token
+* UPDATE_CYCLE - Minutes until prices are updated
+* SEARCH_RADIUS - Search radius in km for gas stations
 
-Vuetify 2.0
-# npm
-$ npm install https://github.com/vuetifyjs/vue-cli-plugin-vuetify.git#dev --save-dev
-$ vue invoke vuetify
+# Deployment
+
+## Telegram
+
+Set up the telegram webhook to receive updates as described [here](https://core.telegram.org/bots/api#setwebhook).
+It needs to point to the endpoint `{API_BASE_PATH}/telegram/updates/{TELEGRAM_TOKEN}`.
+
+## Development
+
+`$ npm run dev`
+
+## Docker-Compose
+
+First set the environment variables in the compose file.
+
+`$ docker-compose up`
+
+# Commands
+
+* `/start` - Sends greetings
+* `/stop` - Removes all subscriptions
+* `/stations` - Lists all tracked gas stations
+* `/add_station {station_id}` - Adds gas station to tracking
+* `/add_sub {station_id} {gas_type}` - Adds subscription for a specific gas station and a gas type (e5, e10, diesel)
+* `/remove_sub {station_id} {gas_type}`- Removes subscription for a specific gas station and a gas type (e5, e10, diesel)
+* `/subs` - Lists all subscriptions
+* `/status` - Sends status message for all subscriptions
+* If you send your location to the bot, it will respond with a list of gas stations within a radius of SEARCH_RADIUS km

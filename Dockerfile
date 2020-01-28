@@ -15,5 +15,4 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
-EXPOSE 8080
-CMD [ "node", "src/app.local.js" ]
+CMD [ "node", "src/app.js" ]

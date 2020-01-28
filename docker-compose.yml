@@ -16,6 +16,8 @@ services:
       - DB_URL=mongodb://db:27017/spritpreise
       - API_BASE_PATH=/api
       - TELEGRAM_TOKEN=
+      - UPDATE_CYCLE=15
+      - SEARCH_RADIUS=10
 
   db:
     image: mongo:latest

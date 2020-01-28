@@ -7,7 +7,7 @@ const Dotenv = require('dotenv-webpack');
 const config = {}
 
 // Application entry point
-config.entry = "./src/app.local.js"
+config.entry = "./src/app.js"
 
 // We build for node
 config.target = "node"

@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint src/** --fix",
-    "dev": "nodemon src/app.local.js",
-    "build": "webpack --mode production --config webpack.config.js",
-    "build:serverless": "webpack --mode production --config webpack.serverless.config.js"
+    "dev": "nodemon src/app.js",
+    "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
-    "aws-serverless-express": "^3.3.6",
     "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",

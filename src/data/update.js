@@ -7,13 +7,13 @@ const Stats = require('../model').Stats;
 const GasTypeStats = require('../model').GasTypeStats;
 const notifyAlerts = require('../telegram/notifier').notifyAlerts;
 
-const findRadius = 10;
+const searchRadius = process.env.SEARCH_RADIUS || 10;
 const BASE_URL= 'https://creativecommons.tankerkoenig.de/json/';
 const API_KEY = process.env.API_KEY;
 const GAS_TYPES = ['e5', 'e10', 'diesel'];
 
 const findStations = async (location) => {
-  const urlLocation = `${BASE_URL}list.php?lat=${location.latitude}&lng=${location.longitude}&rad=${findRadius}&sort=dist&type=all&apikey=${API_KEY}`;
+  const urlLocation = `${BASE_URL}list.php?lat=${location.latitude}&lng=${location.longitude}&rad=${searchRadius}&sort=dist&type=all&apikey=${API_KEY}`;
   const data = await fetch(urlLocation).then(result => result.json()).catch(err => console.error(err));
   return (data != undefined && data.ok) ? data.stations : [];
 };

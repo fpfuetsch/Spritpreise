@@ -49,7 +49,6 @@ const Stats = mongoose.model('Stats', statsSchema);
 const GasTypeStats = mongoose.model('GasTypeStats', gasTypeStatsSchema);
 const PriceStats = mongoose.model('LowestPriceStats', priceStatsSchema);
 const GasStation = mongoose.model('GasStation', gasStationSchema);
-
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
 module.exports.PriceSnapshot = PriceSnapshot;
@@ -57,5 +56,4 @@ module.exports.GasStation = GasStation;
 module.exports.Stats = Stats;
 module.exports.GasTypeStats = GasTypeStats;
 module.exports.PriceStats = PriceStats;
-
 module.exports.Subscription = Subscription;
