@@ -4,6 +4,7 @@ services:
   spritpreise:
     image: spritpreise:1.0.0
     container_name: spritpreise
+    restart: always
     build:
       context: ./
     depends_on:
@@ -20,11 +21,12 @@ services:
       - SEARCH_RADIUS=10
 
   db:
-    image: mongo:latest
+    image: webhippie/mongodb
+    restart: always
     volumes:
-      - db-data:/data/db
-      - mongo-config:/data/configdb
+      - db:/var/lib/mongodb
+      - db-backup:/var/lib/backup
 
 volumes:
-  db-data:
-  mongo-config:
+  db:
+  db-backup:
