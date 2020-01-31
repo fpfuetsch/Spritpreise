@@ -42,7 +42,7 @@ const generateAlertText = async (alerts, stationId, type) => {
       text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
       text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
     } else if (a.level == 2) {
-      text += `LFMinimum der letzten 24h von <b>${a.lastLowest}€<b> wurde erneut erreicht!LF`;
+      text += `LFMinimum der letzten 24h von <b>${a.lastLowest}€</b> wurde erneut erreicht!LF`;
     }
   });
   return text;

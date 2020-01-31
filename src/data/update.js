@@ -52,7 +52,7 @@ const updatePrices = async (station, type, price) => {
   });
 
   const lowestStats = station.stats[type].lowest;
-  const lastPrice = station[type].sort((a, b) => b.timestamp - a.timestamp)[0];
+  const lastPrice = station[type].sort((a, b) => b.timestamp - a.timestamp)[0].price;
   const alarms = [];
 
   ['1', '3', '7', '30'].forEach(t => {
