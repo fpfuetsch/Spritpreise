@@ -52,6 +52,7 @@ const updatePrices = async (station, type, price) => {
   });
 
   const lowestStats = station.stats[type].lowest;
+  const lastPrice = station[type].sort((a, b) => b.timestamp - a.timestamp)[0];
   const alarms = [];
 
   ['1', '3', '7', '30'].forEach(t => {
@@ -61,10 +62,23 @@ const updatePrices = async (station, type, price) => {
         type: type,
         days: Number.parseInt(t),
         lastLowest: lowestStats[t],
-        newLowest: priceSnapshot.price
+        newLowest: priceSnapshot.price,
+        level: 1
       });
     }
   });
+
+  // if minimum of last 24h is reached
+  if ((lowestStats[1] == price) && (price != lastPrice)) {
+    alarms.push({
+      stationId: station.stationId,
+      type: type,
+      days: 1,
+      lastLowest: lowestStats[1],
+      newLowest: priceSnapshot.price,
+      level: 2
+    });
+  }
 
   station[type].unshift(priceSnapshot);
   station.stats[type].lowest = new PriceStats({

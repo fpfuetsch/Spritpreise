@@ -37,9 +37,13 @@ const generateAlertText = async (alerts, stationId, type) => {
   const station = await GasStation.findOne({stationId: stationId}).exec();
   let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.LF`;
   alerts.forEach(a => {
-    text += `LFNeues Minimum für Zeitraum: ${a.days} Tag(e)LF`;
-    text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
-    text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
+    if (a.level == 1) {
+      text += `LFNeues Minimum für Zeitraum: ${a.days} Tag(e)LF`;
+      text += `Vorheriges Minimum: <b>${a.lastLowest}€</b>LF`;
+      text += `Neues Minimum: <b>${a.newLowest}€</b>LF`;
+    } else if (a.level == 2) {
+      text += `LFMinimum der letzten 24h von <b>${a.lastLowest}€<b> wurde erneut erreicht!LF`;
+    }
   });
   return text;
 };
