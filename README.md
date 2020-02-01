@@ -9,7 +9,7 @@ Telegram bot that notifies about relevant price changes of subscribed gas statio
 * API_KEY - API Token for Tankerkoenig
 * DB_URL - Mongo database URL
 * SERVER_PORT - Server port
-* API_BASE_PATH - API base path
+* WEBHOOK_HOST - URL of webhook host (e.g. https://example.org)
 * TELEGRAM_TOKEN - Telegram bot token
 * UPDATE_CYCLE - Minutes until prices are updated
 * SEARCH_RADIUS - Search radius in km for gas stations

@@ -17,11 +17,11 @@ export async function fetchPrices(): Promise<Alert[]> {
   const urlPrices = `${BASE_URL}prices.php?ids=${gasStationIds.join(',')}&apikey=${API_KEY}`
   const data = await fetch(urlPrices).then(result => result.json()).catch(error => console.error(error))
 
-  if (data != undefined && data.ok) {
+  if (data !== undefined && data.ok) {
     const prices = data.prices
-    for (let i = 0; i<gasStations.length; i++) {
+    for (let i = 0; i < gasStations.length; i++) {
       const station = gasStations[i]
-      if (prices[station.stationId] != undefined && prices[station.stationId].status == 'open') {
+      if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
         const data = prices[station.stationId]
         for (const type of GAS_TYPES) {
           if (data[type]) {

@@ -2,9 +2,8 @@
   "name": "spritpreis-bot",
   "version": "1.0.0",
   "scripts": {
-    "lint": "tslint --fix src_new/**/*.ts -t verbose",
-    "dev": "nodemon src/app.js",
-    "dev2": "nodemon --watch src_new/**/*.ts --ignore src_new/**/*.spec.ts --exec ts-node src_new/app.ts",
+    "lint": "tslint --fix src/**/*.ts -t verbose",
+    "dev": "nodemon --watch src/**/*.ts --ignore src/**/*.spec.ts --exec ts-node src/app.ts",
     "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
@@ -23,6 +22,7 @@
     "@types/node": "^13.7.0",
     "nodemon": "^1.19.1",
     "telegram-typings": "^4.0.0-beta",
+    "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "tslint": "^6.0.0",
     "typescript": "^3.7.5",

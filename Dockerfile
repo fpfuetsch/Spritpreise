@@ -15,4 +15,6 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
-CMD [ "node", "src/app.js" ]
+RUN npm run build
+
+CMD [ "node", "dist/server.js" ]

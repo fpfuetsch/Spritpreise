@@ -6,6 +6,6 @@
       "target": "es2019"
   },
   "include": [
-      "src_new/**/*"
+      "src/**/*"
   ]
 }

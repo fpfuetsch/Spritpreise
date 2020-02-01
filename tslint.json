@@ -4,6 +4,23 @@
         "tslint:recommended"
     ],
     "jsRules": {},
-    "rules": {},
-    "rulesDirectory": []
+    "rules": {
+        "quotemark": [true, "single"],
+        "max-line-length": {
+            "severity": "off"
+        },
+        "no-console": {
+            "severity": "off",
+            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+        },
+        "object-literal-sort-keys": false
+    },
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": [
+            "dist/",
+            "*.json",
+            "**/*.json"
+        ]
+    }
 }
