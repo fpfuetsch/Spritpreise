@@ -2,8 +2,9 @@
   "name": "spritpreis-bot",
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint src/** --fix",
+    "lint": "tslint --fix src_new/**/*.ts -t verbose",
     "dev": "nodemon src/app.js",
+    "dev2": "nodemon --watch src_new/**/*.ts --ignore src_new/**/*.spec.ts --exec ts-node src_new/app.ts",
     "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
@@ -13,16 +14,18 @@
     "dotenv-webpack": "^1.7.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.5",
-    "netlify-lambda": "^1.5.1",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
+    "telegraf": "^3.36.0",
     "webpack": "^4.38.0"
   },
   "devDependencies": {
+    "@types/node": "^13.7.0",
     "nodemon": "^1.19.1",
-    "webpack-cli": "^3.3.6",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.0.0"
+    "telegram-typings": "^4.0.0-beta",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5",
+    "webpack-cli": "^3.3.6"
   }
 }
