@@ -1,6 +1,6 @@
 
 import fetch from 'node-fetch'
-import * as cron from 'node-cron';
+import * as cron from 'node-cron'
 import { PriceSnapshot, PriceStats, GasStation, Stats, GasTypeStats, Alert, AlertLevel, BASE_URL } from './model'
 import { notifyAboutAlerts } from '../telegram/notifications/price-update-notification'
 
@@ -124,6 +124,6 @@ export async function updateAndNotify() {
 
 export function configureUpdates() {
   cron.schedule(`*/${UPDATE_CYCLE} * * * *`, () => {
-    updateAndNotify();
-  });
+    updateAndNotify()
+  })
 }

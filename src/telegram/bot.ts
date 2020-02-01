@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from 'dotenv'
 dotenv.config()
 
-import Telegraf from 'telegraf';
+import Telegraf from 'telegraf'
 
 import * as start from './commands/start'
 import * as stations from './commands/stations'

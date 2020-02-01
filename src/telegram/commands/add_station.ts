@@ -9,7 +9,7 @@ export function init (bot) {
       return
     }
 
-    const response: Response = await persistStation(stationId);
+    const response: Response = await persistStation(stationId)
 
     switch (response) {
       case Response.CONFLICT:

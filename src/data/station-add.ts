@@ -15,8 +15,8 @@ export async function persistStation (stationId: Number): Promise<Response> {
     return Response.CONFLICT
   }
 
-  const url = `${BASE_URL}detail.php?id=${stationId}&apikey=${API_KEY}`;
-  const data = await fetch(url).then(res => res.json()).catch(err => console.error(err));
+  const url = `${BASE_URL}detail.php?id=${stationId}&apikey=${API_KEY}`
+  const data = await fetch(url).then(res => res.json()).catch(err => console.error(err))
 
   if (data != undefined && data.ok) {
     const priceStats = new PriceStats ({
@@ -48,11 +48,11 @@ export async function persistStation (stationId: Number): Promise<Response> {
       stats
     })
 
-    await station.save();
-    await fetchPrices();
+    await station.save()
+    await fetchPrices()
 
-    return Response.DONE;
+    return Response.DONE
   } else {
     return Response.NOT_FOUND
   }
-};
+}

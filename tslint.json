@@ -13,7 +13,8 @@
             "severity": "off",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
         },
-        "object-literal-sort-keys": false
+        "object-literal-sort-keys": false,
+        "semicolon": [true, "never"]
     },
     "rulesDirectory": [],
     "linterOptions": {

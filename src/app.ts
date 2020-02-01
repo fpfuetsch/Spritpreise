@@ -2,17 +2,17 @@ import * as express from 'express'
 import * as cors from 'cors'
 import * as mongoose from 'mongoose'
 import { TelegramBot } from './telegram/bot'
-import { configureUpdates } from './data/price-update';
+import { configureUpdates } from './data/price-update'
 
 const DB_URL = process.env.DB_URL
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_TOKEN
 
 const PORT = process.env.SERVER_PORT || 8080
 const WEBHOOK_HOST = process.env.WEBHOOK_HOST
-const WEBHOOK_PATH = `tb-webhook-${TELEGRAM_BOT_TOKEN}`
+const WEBHOOK_PATH = `/tb-webhook-${TELEGRAM_BOT_TOKEN}`
 
 const app = express()
-const bot = TelegramBot.Instance;
+const bot = TelegramBot.Instance
 
 async function start () {
 
@@ -24,7 +24,6 @@ async function start () {
   }
 
   app.use(cors())
-  app.use(express.json())
 
   configureUpdates()
 
