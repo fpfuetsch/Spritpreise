@@ -43,13 +43,8 @@ export function init (bot) {
       chatId: ctx.chat.id
     })
 
-    await subscription.save(async err => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      console.log('New Subscription persisted!')
-      await ctx.reply(`Erfolgreich!`)
-    })
+    await subscription.save()
+    console.log('New Subscription persisted!')
+    await ctx.reply(`Erfolgreich!`)
   })
 }
