@@ -15,6 +15,8 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
+# Build the app
 RUN npm run build
 
+# Run the app
 CMD [ "node", "dist/server.js" ]
