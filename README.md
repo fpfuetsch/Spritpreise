@@ -18,8 +18,7 @@ Telegram bot that notifies about relevant price changes of subscribed gas statio
 
 ## Telegram
 
-Set up the telegram webhook to receive updates as described [here](https://core.telegram.org/bots/api#setwebhook).
-It needs to point to the endpoint `{API_BASE_PATH}/telegram/updates/{TELEGRAM_TOKEN}`.
+If the `WEBHOOK_HOST` is set, the bot runs in webhook mode. Otherwise polling mode is activated.
 
 ## Development
 
