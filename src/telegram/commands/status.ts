@@ -4,7 +4,7 @@ export function init (bot) {
   bot.command('status', async (ctx) => {
     const subscriptions = await Subscription.find({chatId: ctx.chat.id}).exec()
     let message = ''
-    if (subscriptions.length == 0) {
+    if (subscriptions.length === 0) {
       message += 'Keine Abonnements!'
     } else {
       for (const s of subscriptions) {
@@ -15,12 +15,12 @@ export function init (bot) {
   })
 }
 
-async function generateStatusText(stationId: Number, type: String) {
+async function generateStatusText(stationId: number, type: string) {
   const station = await GasStation.findOne({stationId}).exec()
   let message = `\nStatus für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.\n`
 
   const latestSnapshot = station[type].sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))[0]
-  const minutesAgo: String = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
+  const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
   message += `\nLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)\n`
 
   message += `Minimum / Durchschnitt\n`

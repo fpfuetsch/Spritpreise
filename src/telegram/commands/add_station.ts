@@ -4,7 +4,7 @@ export function init (bot) {
   bot.command('add_station', async (ctx) => {
     const stationId = ctx.message.text.replace(/\/add_station/g, '').trim()
 
-    if (stationId == undefined || stationId.length == 0) {
+    if (stationId === undefined || stationId.length === 0) {
       await ctx.reply('Tankstellen ID fehlt!')
       return
     }

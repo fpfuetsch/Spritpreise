@@ -1,8 +1,8 @@
-import * as express from 'express'
 import * as cors from 'cors'
+import * as express from 'express'
 import * as mongoose from 'mongoose'
-import { TelegramBot } from './telegram/bot'
 import { configureUpdates } from './data/price-update'
+import { TelegramBot } from './telegram/bot'
 
 const DB_URL = process.env.DB_URL
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_TOKEN

@@ -4,7 +4,7 @@ export function init (bot) {
   bot.command('add_sub', async (ctx) => {
     const params = ctx.message.text.replace(/\/add_sub/g, '').trim().split(' ')
 
-    if (params.length != 2) {
+    if (params.length !== 2) {
       await ctx.reply('Parameter fehlen oder inkorrekt!')
       return
     }
@@ -15,7 +15,7 @@ export function init (bot) {
     const stationCount = await GasStation.countDocuments({stationId: new RegExp(stationId)})
     const typeExists = ['e5', 'e10', 'diesel'].includes(type)
 
-    if (stationCount == 0) {
+    if (stationCount === 0) {
       await ctx.reply(`Tankstellen mit ID: ${stationId} wurde nicht gefunden!`)
       return
     }

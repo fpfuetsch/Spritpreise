@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 import { Schema } from 'mongoose'
 
 export const BASE_URL = 'https://creativecommons.tankerkoenig.de/json/'
+export const GAS_TYPES = ['e5', 'e10', 'diesel']
 
 export enum AlertLevel {
   STANDARD, REPEAT

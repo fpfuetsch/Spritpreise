@@ -8,5 +8,5 @@ const SEARCH_RADIUS = process.env.SEARCH_RADIUS || 10
 export async function findStations(location) {
   const urlLocation = `${BASE_URL}list.php?lat=${location.latitude}&lng=${location.longitude}&rad=${SEARCH_RADIUS}&sort=dist&type=all&apikey=${API_KEY}`
   const data = await fetch(urlLocation).then(result => result.json()).catch(err => console.error(err))
-  return (data != undefined && data.ok) ? data.stations : []
+  return (data !== undefined && data.ok) ? data.stations : []
 }

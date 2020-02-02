@@ -1,12 +1,11 @@
 
-import fetch from 'node-fetch'
 import * as cron from 'node-cron'
-import { PriceSnapshot, PriceStats, GasStation, Stats, GasTypeStats, Alert, AlertLevel, BASE_URL } from './model'
+import fetch from 'node-fetch'
 import { notifyAboutAlerts } from '../telegram/notifications/price-update-notification'
+import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, PriceStats } from './model'
 
 const UPDATE_CYCLE = process.env.UPDATE_CYCLE || 15
 const API_KEY = process.env.API_KEY
-const GAS_TYPES = ['e5', 'e10', 'diesel']
 const MILLIS_DAY = 24 * 60 * 60 * 1000
 
 export async function fetchPrices(): Promise<Alert[]> {
@@ -19,13 +18,12 @@ export async function fetchPrices(): Promise<Alert[]> {
 
   if (data !== undefined && data.ok) {
     const prices = data.prices
-    for (let i = 0; i < gasStations.length; i++) {
-      const station = gasStations[i]
+    for (const station of gasStations) {
       if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
-        const data = prices[station.stationId]
+        const priceData = prices[station.stationId]
         for (const type of GAS_TYPES) {
-          if (data[type]) {
-            alters = alters.concat(await updatePrices(station, type, data[type]))
+          if (priceData[type]) {
+            alters = alters.concat(await updatePrices(station, type, priceData[type]))
           }
         }
       }
@@ -40,12 +38,12 @@ async function updatePrices(station, type, price) {
     price
   })
 
-  const lowestStats: Number = station.stats[type].lowest
-  const lastPrice: Number = station[type].sort((a, b) => b.timestamp - a.timestamp)[0]?.price
+  const lowestStats: number = station.stats[type].lowest
+  const lastPrice: number = station[type].sort((a, b) => b.timestamp - a.timestamp)[0]?.price
   const alerts: Alert[] = [];
 
   [1, 3, 7, 30].forEach(t => {
-    if (lowestStats[t] != Number.POSITIVE_INFINITY && lowestStats[t] > price) {
+    if (lowestStats[t] !== Number.POSITIVE_INFINITY && lowestStats[t] > price) {
       alerts.push({
         stationId: station.stationId,
         type,
@@ -58,7 +56,7 @@ async function updatePrices(station, type, price) {
   })
 
   // if minimum of last 24h is reached
-  if ((lowestStats[1] == price) && (price != lastPrice)) {
+  if ((lowestStats[1] === price) && (price !== lastPrice)) {
     alerts.push({
       stationId: station.stationId,
       type,

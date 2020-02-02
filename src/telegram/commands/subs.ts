@@ -3,7 +3,7 @@ import { GasStation, Subscription } from '../../data/model'
 export function init (bot) {
   bot.command('subs', async (ctx) => {
     const subs = await Subscription.find({chatId: ctx.chat.id})
-    if (subs.length == 0) {
+    if (subs.length === 0) {
       await ctx.reply('Keine vorhanden!')
     } else {
       let message = ''
