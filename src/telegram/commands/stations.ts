@@ -47,7 +47,7 @@ export function init (bot) {
       const buttons = []
       for (let i = 0; i < Math.min(stations.length, MAX_STATION_COUNT); i++) {
         const station = stations[i]
-        buttons.push([Markup.callbackButton(`${station.brand} ${station.street}`, `scb_${station.id}`)])
+        buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.place}`, `scb_${station.id}`)])
       }
       const stationsFoundMenu = Markup.inlineKeyboard(buttons).extra()
       await ctx.reply('Tankstellen in deiner Umgebung', stationsFoundMenu)
@@ -57,9 +57,10 @@ export function init (bot) {
   bot.action(new RegExp('scb_\S*'), (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const gasTypeMenu = Markup.inlineKeyboard([
-      [Markup.callbackButton('Super', `sfcb_${stationId}_e5`)],
-      [Markup.callbackButton('E10', `sfcb_${stationId}_e10`)],
-      [Markup.callbackButton('Diesel', `sfcb_${stationId}_diesel`)]
+      [ Markup.callbackButton('Super', `sfcb_${stationId}_e5`),
+        Markup.callbackButton('E10', `sfcb_${stationId}_e10`),
+        Markup.callbackButton('Diesel', `sfcb_${stationId}_diesel`)
+      ]
     ]).extra()
     ctx.editMessageText('Kraftstoff auswählen', gasTypeMenu)
   })

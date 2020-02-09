@@ -1,4 +1,5 @@
 import { GasStation, Subscription } from '../../data/model'
+import { getReadableGasType } from '../../utils'
 
 export function init (bot) {
   bot.command('status', async (ctx) => {
@@ -17,7 +18,7 @@ export function init (bot) {
 
 async function generateStatusText(stationId: number, type: string) {
   const station = await GasStation.findOne({stationId}).exec()
-  let message = `\nStatus für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.\n`
+  let message = `\nStatus für ${station.name} ${station.street}, Krafstoff: ${getReadableGasType(type)}.\n`
 
   const latestSnapshot = station[type][0]
   const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)

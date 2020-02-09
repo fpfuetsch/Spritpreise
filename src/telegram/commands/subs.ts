@@ -1,5 +1,6 @@
 import { GasStation, Subscription } from '../../data/model'
 import { Markup } from 'telegraf'
+import { getReadableGasType } from '../../utils'
 
 export function init (bot) {
 
@@ -10,8 +11,8 @@ export function init (bot) {
     } else {
       const buttons = []
       for (const sub of subs) {
-        const station = await GasStation.findOne({stationId: sub.stationId}, {brand: 1, street: 1})
-        buttons.push([Markup.callbackButton(`${station.brand} ${station.street}, ${sub.type}`, `subcb_${sub.stationId}_${sub.type}`)])
+        const station = await GasStation.findOne({stationId: sub.stationId}, {brand: 1, street: 1, city: 1})
+        buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.city}, ${getReadableGasType(sub.type)}`, `subcb_${sub.stationId}_${sub.type}`)])
       }
       const subsFoundMenu = Markup.inlineKeyboard(buttons).extra()
       await ctx.reply('Folgende Abonnements sind für dich registriert', subsFoundMenu)
