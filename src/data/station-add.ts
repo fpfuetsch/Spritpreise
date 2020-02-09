@@ -49,7 +49,10 @@ export async function persistStation (stationId: number): Promise<Response> {
     })
 
     await station.save()
+    console.log('New station tracked')
+
     await fetchPrices()
+    console.log('Updating prices')
 
     return Response.DONE
   } else {

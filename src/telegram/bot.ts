@@ -3,10 +3,6 @@ dotenv.config()
 
 import Telegraf from 'telegraf'
 
-import * as add_station from './commands/add_station'
-import * as add_sub from './commands/add_sub'
-import * as find_station from './commands/find_station'
-import * as remove_sub from './commands/remove_sub'
 import * as start from './commands/start'
 import * as stations from './commands/stations'
 import * as status from './commands/status'
@@ -25,10 +21,6 @@ export class TelegramBot {
     status,
     stop,
     subs,
-    add_sub,
-    remove_sub,
-    add_station,
-    find_station
   ]
 
   private constructor() {}
