@@ -7,28 +7,38 @@ import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, Pric
 const UPDATE_CYCLE = process.env.UPDATE_CYCLE || 15
 const API_KEY = process.env.API_KEY
 const MILLIS_DAY = 24 * 60 * 60 * 1000
+const MAX_GAS_STATIONS_PER_REQUEST = 10;
 
 export async function fetchPrices(): Promise<Alert[]> {
   let alters: Alert[] = []
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
+  const requestPackages = [];
 
-  const urlPrices = `${BASE_URL}prices.php?ids=${gasStationIds.join(',')}&apikey=${API_KEY}`
-  const data = await fetch(urlPrices).then(result => result.json()).catch(error => console.error(error))
+  for (let i = 0; i < Math.ceil(gasStationIds.length / MAX_GAS_STATIONS_PER_REQUEST); i++) {
+    requestPackages.push(gasStationIds.slice(i* MAX_GAS_STATIONS_PER_REQUEST, (i+1)* MAX_GAS_STATIONS_PER_REQUEST))
+  }
 
-  if (data !== undefined && data.ok) {
-    const prices = data.prices
-    for (const station of gasStations) {
-      if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
-        const priceData = prices[station.stationId]
-        for (const type of GAS_TYPES) {
-          if (priceData[type]) {
-            alters = alters.concat(await updatePrices(station, type, priceData[type]))
+  for(const requestPackage of requestPackages) {
+
+    const urlPrices = `${BASE_URL}prices.php?ids=${requestPackage.join(',')}&apikey=${API_KEY}`
+    const data = await fetch(urlPrices).then(result => result.json()).catch(error => console.error(error))
+
+    if (data !== undefined && data.ok) {
+      const prices = data.prices
+      for (const station of gasStations) {
+        if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
+          const priceData = prices[station.stationId]
+          for (const type of GAS_TYPES) {
+            if (priceData[type]) {
+              alters = alters.concat(await updatePrices(station, type, priceData[type]))
+            }
           }
         }
       }
     }
   }
+  
   return alters
 }
 
