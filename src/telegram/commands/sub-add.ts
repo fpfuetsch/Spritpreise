@@ -1,4 +1,4 @@
-import { Markup, Extra } from 'telegraf'
+import { Extra, Markup } from 'telegraf'
 import { GasStation, Subscription } from '../../data/model'
 import { persistStation } from '../../data/station-add'
 import { findStationsByLocation } from '../../data/station-find'
@@ -12,8 +12,8 @@ export function init (bot) {
     Markup.callbackButton('Umkreissuche', 'find_station')
   ]).extra()
 
-  bot.command('station', async (ctx) => {
-    ctx.reply('Tankstellen', stationMenu)
+  bot.action('sub_add_menu', async (ctx) => {
+    ctx.editMessageText('Tankstelle auswählen', stationMenu)
   })
 
   bot.action('list_station', async (ctx) => {
@@ -54,7 +54,7 @@ export function init (bot) {
     }
   })
 
-  bot.action(new RegExp('scb_\S*'), (ctx) => {
+  bot.action(new RegExp('scb_\S*'), async (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const gasTypeMenu = Markup.inlineKeyboard([
       [ Markup.callbackButton('Super', `sfcb_${stationId}_e5`),
@@ -62,7 +62,7 @@ export function init (bot) {
         Markup.callbackButton('Diesel', `sfcb_${stationId}_diesel`)
       ]
     ]).extra()
-    ctx.editMessageText('Kraftstoff auswählen', gasTypeMenu)
+    await ctx.editMessageText('Kraftstoff auswählen', gasTypeMenu)
   })
 
   bot.action(new RegExp('sfcb_\S*'), async (ctx) => {

@@ -1,4 +1,4 @@
-import { GAS_TYPES } from "./data/model";
+import { GAS_TYPES } from './data/model'
 
 export function getReadableGasType(type: string): string {
     if (!GAS_TYPES.includes(type)) {

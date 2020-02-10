@@ -1,13 +1,13 @@
-import { GasStation, Subscription } from '../../data/model'
 import { Markup } from 'telegraf'
+import { GasStation, Subscription } from '../../data/model'
 import { getReadableGasType } from '../../utils'
 
 export function init (bot) {
 
-  bot.command('subs', async (ctx) => {
+  bot.action('sub_remove_menu', async (ctx) => {
     const subs = await Subscription.find({chatId: ctx.chat.id})
     if (subs.length === 0) {
-      await ctx.reply('Keine Abonnements vorhanden!')
+      await ctx.editMessageText('Keine Abonnements vorhanden!')
     } else {
       const buttons = []
       for (const sub of subs) {
@@ -15,7 +15,7 @@ export function init (bot) {
         buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.city}, ${getReadableGasType(sub.type)}`, `subcb_${sub.stationId}_${sub.type}`)])
       }
       const subsFoundMenu = Markup.inlineKeyboard(buttons).extra()
-      await ctx.reply('Folgende Abonnements sind für dich registriert', subsFoundMenu)
+      await ctx.editMessageText('Folgende Abonnements sind für dich registriert', subsFoundMenu)
     }
   })
 
@@ -27,6 +27,7 @@ export function init (bot) {
       [ Markup.callbackButton('Löschen!', `subdelcb_${stationId}_${type}`),
       ],
     ]).extra()
+
     ctx.editMessageText('Willst du das Abonnement wirklich löschen?', subDeleteMenu)
   })
 
