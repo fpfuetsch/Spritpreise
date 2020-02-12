@@ -22,7 +22,7 @@ async function generateStatusText(stationId: number, type: string) {
 
   const latestSnapshot = station[type][0]
   const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
-  message += `\nLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)\nMinimum / Durchschnitt\n`
+  message += `\nLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)\n`
 
   message += `Minimum / Durchschnitt\n`
   message += `24h: <b>${station.stats[type].lowest[1]}€</b> / <b>${station.stats[type].average[1]}€</b>\n`
