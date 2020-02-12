@@ -1,5 +1,6 @@
 import { Alert, AlertLevel, GasStation, Subscription } from '../../data/model'
 import { TelegramBot } from '../bot'
+import { getReadableGasType } from '../../utils'
 
 export async function notifyAboutAlerts(alters: Alert[]) {
   const bot = TelegramBot.Instance
@@ -14,12 +15,10 @@ export async function notifyAboutAlerts(alters: Alert[]) {
 
 async function generateAlertText (alerts: Alert[], stationId: number, type: string) {
   const station = await GasStation.findOne({stationId}, {name: 1, street: 1}).exec()
-  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${type.toUpperCase()}.\n`
+  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${getReadableGasType(type)}.\n`
   alerts.forEach(a => {
     if (a.level === AlertLevel.STANDARD) {
-      text += `\nNeues Minimum für Zeitraum: ${a.days} Tag(e)\n`
-      text += `Vorheriges Minimum: <b>${a.lastPrice}€</b>\n`
-      text += `Neues Minimum: <b>${a.newPrice}€</b>\n`
+      text += `\nNeues Minimum für Zeitraum: ${a.days} Tag(e)\nVorheriges Minimum: <b>${a.lastPrice}€</b>\nNeues Minimum: <b>${a.newPrice}€</b>\n`
     } else if (a.level === AlertLevel.REPEAT) {
       text += `\nMinimum der letzten 24h von <b>${a.lastPrice}€</b> wurde erneut erreicht!\n`
     }

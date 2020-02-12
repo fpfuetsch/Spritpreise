@@ -18,16 +18,11 @@ export function init (bot) {
 
 async function generateStatusText(stationId: number, type: string) {
   const station = await GasStation.findOne({stationId}).exec()
-  let message = `\nStatus für ${station.name} ${station.street}, Krafstoff: ${getReadableGasType(type)}.\n`
-
   const latestSnapshot = station[type][0]
   const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
-  message += `\nLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)\n`
 
-  message += `Minimum / Durchschnitt\n`
-  message += `24h: <b>${station.stats[type].lowest[1]}€</b> / <b>${station.stats[type].average[1]}€</b>\n`
-  message += `3d: <b>${station.stats[type].lowest[3]}€</b> / <b>${station.stats[type].average[3]}€</b>\n`
-  message += `7d: <b>${station.stats[type].lowest[7]}€</b> / <b>${station.stats[type].average[7]}€</b>\n`
-  message += `30d: <b>${station.stats[type].lowest[30]}€</b> / <b>${station.stats[type].average[30]}€</b>\n`
+  let message = `\nStatus für ${station.name} ${station.street}, Krafstoff: ${getReadableGasType(type)}.\n\nLetzter Preis: <b>${latestSnapshot.price}€</b> (vor ${minutesAgo}min)\nMinimum / Durchschnitt\n`
+  message += `24h: <b>${station.stats[type].lowest[1]}€</b> / <b>${station.stats[type].average[1]}€</b>\n3d: <b>${station.stats[type].lowest[3]}€</b> / <b>${station.stats[type].average[3]}€</b>\n`
+  message += `7d: <b>${station.stats[type].lowest[7]}€</b> / <b>${station.stats[type].average[7]}€</b>\n30d: <b>${station.stats[type].lowest[30]}€</b> / <b>${station.stats[type].average[30]}€</b>\n`
   return message
 }
