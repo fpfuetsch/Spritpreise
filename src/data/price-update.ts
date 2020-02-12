@@ -51,9 +51,10 @@ async function updatePrices(station, type, price) {
   const lowestStats: number = station.stats[type].lowest
   const lastPrice: number = station[type].sort((a, b) => b.timestamp - a.timestamp)[0]?.price
   const alerts: Alert[] = [];
-
-  [1, 3, 7, 30].forEach(t => {
-    if (lowestStats[t] !== Number.POSITIVE_INFINITY && lowestStats[t] > price) {
+  
+  let hasAlert = false;
+  [30, 7, 3, 1].forEach(t => {
+    if (lowestStats[t] !== Number.POSITIVE_INFINITY && lowestStats[t] > price && !hasAlert) {
       alerts.push({
         stationId: station.stationId,
         type,
@@ -62,6 +63,7 @@ async function updatePrices(station, type, price) {
         newPrice: price,
         level: AlertLevel.STANDARD
       })
+      hasAlert = true;
     }
   })
 
