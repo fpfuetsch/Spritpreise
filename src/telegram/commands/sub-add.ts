@@ -1,15 +1,16 @@
 import { Extra, Markup } from 'telegraf'
 import { GasStation, Subscription } from '../../data/model'
 import { persistStation } from '../../data/station-add'
-import { findStationsByLocation } from '../../data/station-find'
+import { findStationsByLocation, findStationsByText } from '../../data/station-find'
 
 export function init (bot) {
 
   const MAX_STATION_COUNT = 6
 
   const stationMenu = Markup.inlineKeyboard([
-    Markup.callbackButton('Auflisten', 'list_station'),
-    Markup.callbackButton('Umkreissuche', 'find_station')
+    Markup.callbackButton('Auflisten 📄', 'list_station'),
+    Markup.callbackButton('Umkreissuche 📍', 'find_station_by_location'),
+    Markup.callbackButton('Textsuche 🔍', 'find_station_by_text')
   ]).extra()
 
   bot.action('sub_add_menu', async (ctx) => {
@@ -17,40 +18,49 @@ export function init (bot) {
   })
 
   bot.action('list_station', async (ctx) => {
-    const stations = await GasStation.find({}, {stationId: 1, brand: 1, street: 1})
+    const stations = await GasStation.find({}, {stationId: 1, brand: 1, street: 1, city: 1})
     if (stations.length === 0) {
       await ctx.editMessageText('Keine vorhanden!')
     } else {
-      const buttons = []
-      for (const station of stations) {
-        buttons.push([Markup.callbackButton(`${station.brand} ${station.street}`, `scb_${station.stationId}`)])
-      }
-      const stationsFoundMenu = Markup.inlineKeyboard(buttons).extra()
-      await ctx.editMessageText('Folgende Tankstellen werden bereits getrackt', stationsFoundMenu)
+      await ctx.editMessageText('Folgende Tankstellen werden bereits getrackt', stationsFoundMenu(stations))
     }
   })
 
-  bot.action('find_station', async (ctx) => {
-      await ctx.reply('Bitte schicke mir deinen Standort, sodass ich nach Tankstellen in deiner Umgebung suchen kann.', Extra.markup((markup) => {
-        return markup.resize()
-          .keyboard([
-            markup.locationRequestButton('Standort schicken')
-          ])
-      }))
+  bot.action('find_station_by_location', async (ctx) => {
+    await ctx.reply('Bitte schicke mir deinen Standort, sodass ich nach Tankstellen in deiner Umgebung suchen kann.', Extra.markup((markup) => {
+      return markup.resize()
+        .keyboard([
+          markup.locationRequestButton('Standort schicken')
+        ])
+    }))
   })
 
   bot.on('location', async (ctx) => {
     const stations = await findStationsByLocation(ctx.message.location)
     if (stations.length === 0) {
-      await ctx.reply(`Keine Tankstellen in der Umgebung gefunden!`)
+      await ctx.reply(`Keine Tankstellen in der Umgebung gefunden! 🤷`)
     } else {
-      const buttons = []
-      for (let i = 0; i < Math.min(stations.length, MAX_STATION_COUNT); i++) {
-        const station = stations[i]
-        buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.place}`, `scb_${station.id}`)])
+      await ctx.reply('Tankstellen in deiner Umgebung', stationsFoundMenu(stations))
+    }
+  })
+
+  bot.action('find_station_by_text', async (ctx) => {
+    ctx.session.locationRequest = true
+    await ctx.reply('Bitte schicke mir einen Ort in dessen Umgebung ich nach Tankstellen suche soll.')
+  })
+
+  bot.on('text', async (ctx) => {
+    if (ctx.session.locationRequest) {
+      const res = await findStationsByText(ctx.message.text)
+      if (res.location === 'error') {
+        await ctx.reply(`Keine Tankstellen für den Ort ${ctx.message.text}' gefunden! 🤷`)
+        return
       }
-      const stationsFoundMenu = Markup.inlineKeyboard(buttons).extra()
-      await ctx.reply('Tankstellen in deiner Umgebung', stationsFoundMenu)
+      if (res.stations.length === 0) {
+        await ctx.reply(`Keine Tankstellen in der Umgebung von '${res.location}' gefunden! 🤷`)
+      } else {
+        await ctx.reply(`Tankstellen in der Umgebung von '${res.location}'` , stationsFoundMenu(res.stations))
+      }
     }
   })
 
@@ -70,7 +80,7 @@ export function init (bot) {
     const type = ctx.update.callback_query.data.split('_')[2]
 
     if (await Subscription.exists({stationId, type, chatId: ctx.chat.id})) {
-      await ctx.editMessageText(`Abon­ne­ment existiert bereits!`)
+      await ctx.editMessageText(`Abon­ne­ment existiert bereits! 👌`)
       return
     }
 
@@ -85,6 +95,15 @@ export function init (bot) {
     })
 
     await subscription.save()
-    await ctx.editMessageText(`Neues Abonnement wurde erfolgreich erstellt!`)
+    await ctx.editMessageText(`Neues Abonnement wurde erfolgreich erstellt! ✅`)
   })
+
+  function stationsFoundMenu(stations) {
+    const buttons = []
+    for (let i = 0; i < Math.min(stations.length, MAX_STATION_COUNT); i++) {
+      const station = stations[i]
+      buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.place || station.city}`, `scb_${station.stationId || station.id}`)])
+    }
+    return Markup.inlineKeyboard(buttons).extra()
+  }
 }

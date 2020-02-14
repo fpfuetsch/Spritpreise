@@ -24,11 +24,11 @@ export function init (bot) {
     const type = ctx.update.callback_query.data.split('_')[2]
 
     const subDeleteMenu = Markup.inlineKeyboard([
-      [ Markup.callbackButton('Löschen!', `subdelcb_${stationId}_${type}`),
+      [ Markup.callbackButton('Löschen! ❌', `subdelcb_${stationId}_${type}`),
       ],
     ]).extra()
 
-    ctx.editMessageText('Willst du das Abonnement wirklich löschen?', subDeleteMenu)
+    ctx.editMessageText('Willst du das Abonnement wirklich löschen❓', subDeleteMenu)
   })
 
   bot.action(new RegExp('subdelcb_\S*'), async (ctx) => {
@@ -38,12 +38,12 @@ export function init (bot) {
     const subsExists = await Subscription.exists({stationId, type, chatId: ctx.chat.id})
 
     if (!subsExists) {
-      await ctx.editMessageText(`Abon­ne­ment existiert nicht mehr!`)
+      await ctx.editMessageText(`Abon­ne­ment existiert nicht mehr! 🤷`)
       return
     }
 
     await Subscription.deleteOne({stationId, type, chatId: ctx.chat.id}).exec()
 
-    await ctx.editMessageText(`Erfolgreich gelöscht!`)
+    await ctx.editMessageText(`Erfolgreich gelöscht! ✅`)
   })
 }

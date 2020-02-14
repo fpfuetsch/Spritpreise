@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import Telegraf from 'telegraf'
+import Telegraf, { session } from 'telegraf'
 
 import * as menu from './commands/menu'
 import * as start from './commands/start'
@@ -32,6 +32,7 @@ export class TelegramBot {
       return this.botInstance
     } else {
       this.botInstance = new Telegraf(TELEGRAM_TOKEN)
+      this.botInstance.use(session())
       this.commands.forEach(c => c.init(this.botInstance))
       return this.botInstance
     }

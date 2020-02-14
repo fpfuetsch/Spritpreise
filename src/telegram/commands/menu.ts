@@ -1,11 +1,11 @@
-import { Markup } from 'telegraf'
+import { Markup, session } from 'telegraf'
 import { Subscription } from '../../data/model'
 
 export function init (bot) {
 
   const basicMainMenu = [
-    Markup.callbackButton('Neue Benachrichtigung', 'sub_add_menu'),
-    Markup.callbackButton('Benachrichtigung löschen', 'sub_remove_menu')
+    Markup.callbackButton('Neue Benachrichtigung 🆕', 'sub_add_menu'),
+    Markup.callbackButton('Benachrichtigung löschen ❌', 'sub_remove_menu')
   ]
 
   bot.command('menu', async (ctx) => {
