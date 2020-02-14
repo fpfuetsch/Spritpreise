@@ -20,7 +20,8 @@ export interface Alert {
 const subscriptionSchema = new Schema({
   stationId: String,
   type: String,
-  chatId: Number
+  chatId: Number,
+  active: Boolean
 })
 
 const priceSnapshotSchema = new Schema({

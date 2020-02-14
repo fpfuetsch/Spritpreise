@@ -1,10 +1,10 @@
 import { Alert, AlertLevel, GasStation, Subscription } from '../../data/model'
-import { TelegramBot } from '../bot'
 import { getReadableGasType } from '../../utils'
+import { TelegramBot } from '../bot'
 
 export async function notifyAboutAlerts(alters: Alert[]) {
   const bot = TelegramBot.Instance
-  const subsciptions = await Subscription.find().exec()
+  const subsciptions = await Subscription.find({active: true}).exec()
   subsciptions.forEach(async s => {
     const matches = alters.filter(a => a.stationId === s.stationId && a.type === s.type)
     if (matches.length > 0) {

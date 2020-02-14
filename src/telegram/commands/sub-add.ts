@@ -80,7 +80,8 @@ export function init (bot) {
     const subscription = new Subscription({
       stationId,
       type,
-      chatId: ctx.chat.id
+      chatId: ctx.chat.id,
+      active: true
     })
 
     await subscription.save()
