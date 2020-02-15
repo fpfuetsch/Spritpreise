@@ -9,7 +9,8 @@ export function init (bot) {
   ]
 
   bot.command('menu', async (ctx) => {
-    await mainMenu(ctx)
+    const menu = await mainMenu(ctx)
+    ctx.reply(menu.message, menu.keyboard)
   })
 
   bot.action(new RegExp('subpp_\S*'), async (ctx) => {
@@ -20,18 +21,24 @@ export function init (bot) {
       sub.active = active
       await sub.save()
     }
-
-    await mainMenu(ctx)
+    const menu = await mainMenu(ctx)
+    ctx.editMessageText(menu.message, menu.keyboard)
   })
 
   async function mainMenu(ctx) {
-    const notificationsActive = await Subscription.exists({chatId: ctx.chat.id, active: true})
+    const subs = await Subscription.find({chatId: ctx.chat.id})
+    const notificationsActive = subs.filter(sub => sub.active === true).length > 0
     const mainMenuButtons = [
       [ ...basicMainMenu ],
-      [ notificationsActive ? Markup.callbackButton('Pausieren ⏸', `subpp_pause`) :
-                              Markup.callbackButton('Fortsetzen ▶', `subpp_play`) ]
+      subs.length > 0 ?
+        [ notificationsActive ? Markup.callbackButton('Pausieren ⏸', `subpp_pause`) :
+                                Markup.callbackButton('Fortsetzen ▶', `subpp_play`) ]
+      : []
     ]
-    ctx.editMessageText('Was kann ich für dich tun? Du kannst Benachrichtigungen...', Markup.inlineKeyboard(mainMenuButtons).extra())
+    return {
+             message: 'Was kann ich für dich tun? Du kannst Benachrichtigungen...',
+             keyboard: Markup.inlineKeyboard(mainMenuButtons).extra()
+           }
   }
 
 }

@@ -3,6 +3,7 @@ dotenv.config()
 
 import Telegraf, { session } from 'telegraf'
 
+import * as help from './commands/help'
 import * as menu from './commands/menu'
 import * as start from './commands/start'
 import * as status from './commands/status'
@@ -17,12 +18,13 @@ export class TelegramBot {
   private static botInstance
 
   private static commands = [
+    help,
+    menu,
     start,
     status,
     stop,
-    menu,
     sub_add,
-    sub_remove
+    sub_remove,
   ]
 
   private constructor() {}
