@@ -28,7 +28,7 @@ export function init (bot) {
       ],
     ]).extra()
 
-    ctx.editMessageText('Willst du das Abonnement wirklich löschen❓', subDeleteMenu)
+      ctx.editMessageText('Willst du das Abonnement wirklich löschen?', subDeleteMenu)
   })
 
   bot.action(new RegExp('subdelcb_\S*'), async (ctx) => {

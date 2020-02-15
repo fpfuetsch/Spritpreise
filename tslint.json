@@ -17,7 +17,9 @@
         "ordered-imports": true,
         "no-trailing-whitespace": true,
         "eofline": true,
-        "semicolon": [true, "never"]
+        "semicolon": [true, "never"],
+        "keyword-spacing": ["error", { "before": true, "after": true }],
+        "space-before-function-paren": ["error", "always"]
     },
     "rulesDirectory": [],
     "linterOptions": {

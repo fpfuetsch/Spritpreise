@@ -7,13 +7,13 @@ import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, Pric
 const UPDATE_CYCLE = process.env.UPDATE_CYCLE || 15
 const API_KEY = process.env.API_KEY
 const MILLIS_DAY = 24 * 60 * 60 * 1000
-const MAX_GAS_STATIONS_PER_REQUEST = 10;
+const MAX_GAS_STATIONS_PER_REQUEST = 10
 
 export async function fetchPrices(): Promise<Alert[]> {
   let alters: Alert[] = []
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
-  const requestPackages = [];
+  const requestPackages = []
 
   for (let i = 0; i < Math.ceil(gasStationIds.length / MAX_GAS_STATIONS_PER_REQUEST); i++) {
     requestPackages.push(gasStationIds.slice(i* MAX_GAS_STATIONS_PER_REQUEST, (i+1)* MAX_GAS_STATIONS_PER_REQUEST))
@@ -38,7 +38,7 @@ export async function fetchPrices(): Promise<Alert[]> {
       }
     }
   }
-  
+
   return alters
 }
 
@@ -50,8 +50,8 @@ async function updatePrices(station, type, price) {
 
   const lowestStats: number = station.stats[type].lowest
   const lastPrice: number = station[type].sort((a, b) => b.timestamp - a.timestamp)[0]?.price
-  const alerts: Alert[] = [];
-  
+  const alerts: Alert[] = []
+
   let hasAlert = false;
   [30, 7, 3, 1].forEach(t => {
     if (lowestStats[t] !== Number.POSITIVE_INFINITY && lowestStats[t] > price && !hasAlert) {
@@ -63,7 +63,7 @@ async function updatePrices(station, type, price) {
         newPrice: price,
         level: AlertLevel.STANDARD
       })
-      hasAlert = true;
+      hasAlert = true
     }
   })
 
