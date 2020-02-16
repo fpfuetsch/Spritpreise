@@ -41,7 +41,7 @@ export function init (bot) {
 
   bot.action('find_station_by_text', async (ctx) => {
     ctx.session.locationRequest = true
-    await ctx.reply('Bitte schicke mir einen Ort in dessen Umgebung ich nach Tankstellen suche soll.')
+    await ctx.reply('Bitte schicke mir einen Ort in Deutschland in dessen Umgebung ich nach Tankstellen suche soll.')
   })
 
 

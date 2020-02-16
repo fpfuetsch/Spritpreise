@@ -13,7 +13,7 @@ export async function findStationsByLocation(location) {
 }
 
 export async function findStationsByText(text) {
-  const urlLocation = `${GEOCODING_BASE_URL}?q=${encodeURIComponent(text)}&format=json`
+  const urlLocation = `${GEOCODING_BASE_URL}?q=${encodeURIComponent(text)}&format=json&countrycodes=de`
   const data = await fetch(urlLocation).then(result => result.json()).catch(err => console.error(err))
   const res = data[0]
   return {
