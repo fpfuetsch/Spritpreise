@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.9.1",
     "node-cron": "^2.0.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "telegraf": "^3.36.0",
     "webpack": "^4.41.6"
   },
