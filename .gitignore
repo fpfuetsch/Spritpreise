@@ -1,6 +1,9 @@
 /.env
+/.env-db
 /start_db.sh
 dist
 mongo_db
 node_modules
 dist
+data
+mongo-init.js

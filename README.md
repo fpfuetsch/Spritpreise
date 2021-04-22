@@ -26,6 +26,6 @@ If the `WEBHOOK_HOST` is set, the bot runs in webhook mode. Otherwise polling mo
 
 ## Docker-Compose
 
-First set the environment variables in the compose file.
-
-`$ docker-compose up`
+1. Copy `mongo-init.js_template` to `mongo-inits.js` and set MongoDB password in it
+1. Copy `env_template` and 'env-db_template` accordingly and set the correct variables in them
+1. Run `docker-compose up`

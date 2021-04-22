@@ -1,0 +1,12 @@
+db.createUser(
+        {
+            user: "spritpreise",
+            pwd: "<<SET_YOUR_PASSWORD_HERE>>",
+            roles: [
+                {
+                    role: "readWrite",
+                    db: "spritpreise"
+                }
+            ]
+        }
+);

@@ -2,25 +2,24 @@ version: '3'
 
 services:
   spritpreise:
-    image: spritpreise:1.0.0
-    container_name: spritpreise
+    image: spritpreise
+    container_name: spritpreise-app
     restart: always
     build:
       context: ./
     depends_on:
       - db
     ports:
-      - "3005:80"
+      - 3040:80
     env_file:
       - .env
 
   db:
-    image: webhippie/mongodb
+    image: mongo:latest
+    container_name: spritpreise-db
     restart: always
     volumes:
-      - db:/var/lib/mongodb
-      - db-backup:/var/lib/backup
-
-volumes:
-  db:
-  db-backup:
+      - ./data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    env_file:
+      - .env-db
