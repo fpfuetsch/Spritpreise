@@ -32,7 +32,7 @@ export function init (bot) {
 
   bot.action('find_station_by_location', async (ctx) => {
     await ctx.reply('Bitte schicke mir deinen Standort, sodass ich nach Tankstellen in deiner Umgebung suchen kann.', Extra.markup((markup) => {
-      return markup.resize()
+      return markup
         .keyboard([
           markup.locationRequestButton('Standort schicken')
         ])

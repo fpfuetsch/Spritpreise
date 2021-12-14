@@ -7,25 +7,25 @@
     "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
+    "core-js": "^3.19.3",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "dotenv-webpack": "^1.7.0",
+    "dotenv": "^10.0.0",
+    "dotenv-webpack": "^7.0.3",
     "express": "^4.17.1",
-    "mongoose": "^5.9.1",
+    "mongoose": "^5.13.13",
     "node-cron": "^2.0.3",
-    "node-fetch": "^2.6.1",
-    "telegraf": "^3.36.0",
-    "webpack": "^4.41.6"
+    "node-fetch": "^2.6.6",
+    "telegraf": "^3.39.0",
+    "webpack": "^5.65.0"
   },
   "devDependencies": {
-    "@types/node": "^13.7.1",
-    "nodemon": "^1.19.4",
-    "telegram-typings": "^4.0.0-beta",
-    "ts-loader": "^6.2.1",
-    "ts-node": "^8.6.2",
+    "@types/node": "^16.11.12",
+    "nodemon": "^2.0.15",
+    "telegram-typings": "^5.0.0",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
     "tslint": "^6.0.0",
-    "typescript": "^3.7.5",
-    "webpack-cli": "^3.3.11"
+    "typescript": "^4.5.3",
+    "webpack-cli": "^4.9.1"
   }
 }
