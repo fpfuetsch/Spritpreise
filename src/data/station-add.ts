@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+const fetch = (url) => import('node-fetch').then(({default: fetch}) => fetch(url));
 import { BASE_URL, GasStation, GasTypeStats, PriceStats, Stats } from './model'
 import { fetchPrices } from './price-update'
 
@@ -16,7 +16,7 @@ export async function persistStation (stationId: number): Promise<Response> {
   }
 
   const url = `${BASE_URL}detail.php?id=${stationId}&apikey=${API_KEY}`
-  const data = await fetch(url).then(res => res.json()).catch(err => console.error(err))
+  const data : any = await fetch(url).then(res => res.json()).catch(err => console.error(err))
 
   if (data !== undefined && data.ok) {
     const priceStats = new PriceStats ({
