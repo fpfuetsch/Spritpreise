@@ -1,5 +1,4 @@
-
-import fetch from 'node-fetch'
+const fetch = (url) => import('node-fetch').then(({default: fetch}) => fetch(url));
 import { BASE_URL } from './model'
 
 const API_KEY = process.env.API_KEY
@@ -8,7 +7,7 @@ const GEOCODING_BASE_URL = 'https://nominatim.openstreetmap.org/search'
 
 export async function findStationsByLocation(location) {
   const urlLocation = `${BASE_URL}list.php?lat=${location.latitude}&lng=${location.longitude}&rad=${SEARCH_RADIUS}&sort=dist&type=all&apikey=${API_KEY}`
-  const data = await fetch(urlLocation).then(result => result.json()).catch(err => console.error(err))
+  const data: any = await fetch(urlLocation).then(result => result.json()).catch(err => console.error(err))
   return (data !== undefined && data.ok) ? data.stations : []
 }
 
