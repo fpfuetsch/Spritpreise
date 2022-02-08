@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "tslint --fix src/**/*.ts -t verbose",
-    "dev": "nodemon --watch src/**/*.ts --ignore src/**/*.spec.ts --exec ts-node src/app.ts",
+    "dev": "nodemon --watch src/ src/app.ts",
     "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
+    "axios": "^0.25.0",
     "core-js": "^3.19.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -14,7 +15,6 @@
     "express": "^4.17.1",
     "mongoose": "^5.13.13",
     "node-cron": "^2.0.3",
-    "node-fetch": "^3.1.1",
     "telegraf": "^3.39.0",
     "webpack": "^5.65.0"
   },

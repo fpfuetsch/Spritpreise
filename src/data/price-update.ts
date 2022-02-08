@@ -1,6 +1,6 @@
 
 import * as cron from 'node-cron'
-const fetch = (url) => import('node-fetch').then(({default: fetch}) => fetch(url));
+import axios from 'axios'
 import { notifyAboutAlerts } from '../telegram/notifications/price-update-notification'
 import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, PriceStats } from './model'
 
@@ -22,7 +22,7 @@ export async function fetchPrices(): Promise<Alert[]> {
   for(const requestPackage of requestPackages) {
 
     const urlPrices = `${BASE_URL}prices.php?ids=${requestPackage.join(',')}&apikey=${API_KEY}`
-    const data : any = await fetch(urlPrices).then(result => result.json()).catch(error => console.error(error))
+    const data : any = await axios(urlPrices).then(result => result.data).catch(error => console.error(error))
 
     if (data !== undefined && data.ok) {
       const prices = data.prices
