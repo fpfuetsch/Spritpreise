@@ -15,14 +15,13 @@ export async function notifyAboutAlerts(alters: Alert[]) {
 
 async function generateAlertText (alerts: Alert[], stationId: number, type: string) {
   const station = await GasStation.findOne({stationId}, {name: 1, street: 1}).exec()
-  let text = `Benachrichtigung für ${station.name} ${station.street}, Krafstoff: ${getReadableGasType(type)}.\n`
+  let text = `🚨 ${station.name} ${station.street}\n`
+  text += `💧 ${getReadableGasType(type)}\n\n`
   alerts.forEach(a => {
     if (a.level === AlertLevel.STANDARD) {
-      text += `\nNeues Minimum für Zeitraum: ${a.days} Tag(e)\n`
-      text += `Vorheriges Minimum: <b>${a.lastPrice}€</b>\n`
-      text += `Neues Minimum: <b>${a.newPrice}€</b>\n`
+      text += `🚀 ${a.days} Tag(e) Minimum von <b>${a.newPrice}€</b> erreicht\n`
     } else if (a.level === AlertLevel.REPEAT) {
-      text += `\nMinimum der letzten 24h von <b>${a.lastPrice}€</b> wurde erneut erreicht!\n`
+      text += `⏱ Minimum der letzten 24h von <b>${a.lastPrice}€</b> erneut erreicht\n`
     }
   })
   return text
