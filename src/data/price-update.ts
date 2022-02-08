@@ -10,7 +10,7 @@ const MILLIS_DAY = 24 * 60 * 60 * 1000
 const MAX_GAS_STATIONS_PER_REQUEST = 10
 
 export async function fetchPrices(): Promise<Alert[]> {
-  let alters: Alert[] = []
+  let alerts: Alert[] = []
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
   const requestPackages = []
@@ -31,7 +31,7 @@ export async function fetchPrices(): Promise<Alert[]> {
           const priceData = prices[station.stationId]
           for (const type of GAS_TYPES) {
             if (priceData[type]) {
-              alters = alters.concat(await updatePrices(station, type, priceData[type]))
+              alerts = alerts.concat(await updatePrices(station, type, priceData[type]))
             }
           }
         }
@@ -39,7 +39,7 @@ export async function fetchPrices(): Promise<Alert[]> {
     }
   }
 
-  return alters
+  return alerts
 }
 
 async function updatePrices(station, type, price) {
@@ -126,7 +126,7 @@ async function removeSnapshots() {
 export async function updateAndNotify() {
   console.log(`${new Date()} - updating prices`)
   const alerts: Alert[] = await fetchPrices()
-  console.log(`${new Date()} - ${alerts.length} new alters`)
+  console.log(`${new Date()} - ${alerts.length} new alerts`)
   await notifyAboutAlerts(alerts)
   await removeSnapshots()
 }
