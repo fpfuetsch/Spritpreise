@@ -40,7 +40,7 @@ export async function fetchPrices(): Promise<Alert[]> {
       }
     }
   }
-
+  console.log("update: done")
   return alerts
 }
 
