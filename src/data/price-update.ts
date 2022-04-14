@@ -11,20 +11,22 @@ const MAX_GAS_STATIONS_PER_REQUEST = 10
 
 export async function fetchPrices(): Promise<Alert[]> {
   let alerts: Alert[] = []
+  console.log('update: fetching stations');
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
   const requestPackages = []
-
+  console.log('update: setting up request packages');
   for (let i = 0; i < Math.ceil(gasStationIds.length / MAX_GAS_STATIONS_PER_REQUEST); i++) {
     requestPackages.push(gasStationIds.slice(i* MAX_GAS_STATIONS_PER_REQUEST, (i+1)* MAX_GAS_STATIONS_PER_REQUEST))
   }
 
   for(const requestPackage of requestPackages) {
-
+    console.log('update: new request package');
     const urlPrices = `${BASE_URL}prices.php?ids=${requestPackage.join(',')}&apikey=${API_KEY}`
     const data : any = await axios(urlPrices).then(result => result.data).catch(error => console.error(error))
-
+    console.log('update: received data');
     if (data !== undefined && data.ok) {
+      console.log('update: data ok');
       const prices = data.prices
       for (const station of gasStations) {
         if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
@@ -43,6 +45,7 @@ export async function fetchPrices(): Promise<Alert[]> {
 }
 
 async function updatePrices(station, type, price) {
+  console.log('update: price update');
   const priceSnapshot = new PriceSnapshot({
     timestamp: new Date(),
     price
@@ -96,6 +99,7 @@ async function updatePrices(station, type, price) {
   })
 
   await station.save()
+  console.log('update: price update done');
   return alerts
 }
 
