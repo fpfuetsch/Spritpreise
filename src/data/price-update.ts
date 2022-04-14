@@ -117,6 +117,7 @@ function calculateAverage(station, type, days) {
 }
 
 async function removeSnapshots() {
+  console.log("cleanup started")
   const deltaMs = 31 * MILLIS_DAY
   const gasStations = await GasStation.find().exec()
   await gasStations.forEach(async s => {
@@ -125,14 +126,15 @@ async function removeSnapshots() {
     })
     await s.save()
   })
+  console.log("cleanup done")
 }
 
 export async function updateAndNotify() {
   console.log(`${new Date()} - updating prices`)
+  await removeSnapshots()
   const alerts: Alert[] = await fetchPrices()
   console.log(`${new Date()} - ${alerts.length} new alerts`)
   await notifyAboutAlerts(alerts)
-  await removeSnapshots()
 }
 
 
