@@ -1,9 +1,9 @@
 import { GasStation, Subscription } from '../../data/model'
 import { getReadableGasType } from '../../utils'
 
-export function init (bot) {
+export function init(bot) {
   bot.command('status', async (ctx) => {
-    const subscriptions = await Subscription.find({chatId: ctx.chat.id}).exec()
+    const subscriptions = await Subscription.find({ chatId: ctx.chat.id }).exec()
     let message = ''
     if (subscriptions.length === 0) {
       message += 'Keine Abonnements!'
@@ -19,21 +19,25 @@ export function init (bot) {
 }
 
 async function generateStatusText(stationId: number, type: string) {
-  const station = await GasStation.findOne({stationId}).exec()
+  const station = await GasStation.findOne({ stationId }).exec()
   let message = `👉 ${station.name} ${station.street}\n`
   message += `💧 ${getReadableGasType(type)}\n`
 
   const latestSnapshot = station[type][0]
-  const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
-  message += `💰 ${latestSnapshot.price}€ (vor ${minutesAgo} min)\n`
+  if (latestSnapshot) {
+    const minutesAgo: string = ((Date.now() - Date.parse(latestSnapshot.timestamp)) / (60 * 1000)).toFixed(0)
+    message += `💰 ${latestSnapshot.price}€ (vor ${minutesAgo} min)\n`
 
-  message += '\n```'
-  message += '      |  Min.  | Durch. |\n'
-  message += '+-----+--------+--------+\n'
-  message += `| 24h | ${station.stats[type].lowest[1].toFixed(3)}€ | ${station.stats[type].average[1].toFixed(3)}€ |\n`
-  message += `| 3d  | ${station.stats[type].lowest[3].toFixed(3)}€ | ${station.stats[type].average[3].toFixed(3)}€ |\n`
-  message += `| 7d  | ${station.stats[type].lowest[7].toFixed(3)}€ | ${station.stats[type].average[7].toFixed(3)}€ |\n`
-  message += `| 30d | ${station.stats[type].lowest[30].toFixed(3)}€ | ${station.stats[type].average[30].toFixed(3)}€ |\n`
-  message += '```'
+    message += '\n```'
+    message += '      |  Min.  | Durch. |\n'
+    message += '+-----+--------+--------+\n'
+    message += `| 24h | ${station.stats[type].lowest[1].toFixed(3)}€ | ${station.stats[type].average[1].toFixed(3)}€ |\n`
+    message += `| 3d  | ${station.stats[type].lowest[3].toFixed(3)}€ | ${station.stats[type].average[3].toFixed(3)}€ |\n`
+    message += `| 7d  | ${station.stats[type].lowest[7].toFixed(3)}€ | ${station.stats[type].average[7].toFixed(3)}€ |\n`
+    message += `| 30d | ${station.stats[type].lowest[30].toFixed(3)}€ | ${station.stats[type].average[30].toFixed(3)}€ |\n`
+    message += '```'
+  } else {
+    message += '🥺 Keine Daten verfügbar.'
+  }
   return message
 }

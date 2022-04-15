@@ -4,29 +4,33 @@ import axios from 'axios'
 import { notifyAboutAlerts } from '../telegram/notifications/price-update-notification'
 import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, PriceStats } from './model'
 
-const UPDATE_CYCLE = process.env.UPDATE_CYCLE || 15
+const UPDATE_CYCLE: number = Number.parseInt(process.env.UPDATE_CYCLE) || 15
 const API_KEY = process.env.API_KEY
 const MILLIS_DAY = 24 * 60 * 60 * 1000
 const MAX_GAS_STATIONS_PER_REQUEST = 10
 
 export async function fetchPrices(): Promise<Alert[]> {
+  console.log('Fetcher: getting stations')
+
   let alerts: Alert[] = []
-  console.log('update: fetching stations');
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
   const requestPackages = []
-  console.log('update: setting up request packages');
+
+  console.log(`Fetcher: setting up request packages for ${gasStationIds.length} stations`)
+
   for (let i = 0; i < Math.ceil(gasStationIds.length / MAX_GAS_STATIONS_PER_REQUEST); i++) {
     requestPackages.push(gasStationIds.slice(i* MAX_GAS_STATIONS_PER_REQUEST, (i+1)* MAX_GAS_STATIONS_PER_REQUEST))
   }
 
   for(const requestPackage of requestPackages) {
-    console.log('update: new request package');
+    console.log('Fetcher: Requesting package')
     const urlPrices = `${BASE_URL}prices.php?ids=${requestPackage.join(',')}&apikey=${API_KEY}`
     const data : any = await axios(urlPrices).then(result => result.data).catch(error => console.error(error))
-    console.log('update: received data');
+    console.log('Fetcher: Received Answer')
+
     if (data !== undefined && data.ok) {
-      console.log('update: data ok');
+      console.log('Fetcher: Data is ok')
       const prices = data.prices
       for (const station of gasStations) {
         if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
@@ -40,12 +44,12 @@ export async function fetchPrices(): Promise<Alert[]> {
       }
     }
   }
-  console.log("update: done")
+  console.log('update: done')
   return alerts
 }
 
 async function updatePrices(station, type, price) {
-  console.log('update: price update');
+  console.log('PriceSnapshot: Updating station')
   const priceSnapshot = new PriceSnapshot({
     timestamp: new Date(),
     price
@@ -99,25 +103,27 @@ async function updatePrices(station, type, price) {
   })
 
   await station.save()
-  console.log('update: price update done');
+  console.log('PriceSnapshot: Update done')
   return alerts
 }
 
 function calculateLowest(station, type, days) {
   const deltaMs = days * MILLIS_DAY
-  const minPrice = Math.min(...(station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price)))
+  const now = Date.now()
+  const minPrice = Math.min(...(station[type].filter(p => now - Date.parse(p.timestamp) < deltaMs).map(p => p.price)))
   return minPrice
 }
 
 function calculateAverage(station, type, days) {
   const deltaMs = days * MILLIS_DAY
-  const prices = station[type].filter(p => Date.now() - Date.parse(p.timestamp) < deltaMs).map(p => p.price)
+  const now = Date.now()
+  const prices = station[type].filter(p => now - Date.parse(p.timestamp) < deltaMs).map(p => p.price)
   const average = prices.reduce((a, b) => a + b, 0) / prices.length
   return Number.parseFloat(average.toFixed(3))
 }
 
 async function removeSnapshots() {
-  console.log("cleanup started")
+  console.log(`Cleaner: Started at ${new Date()}`)
   const deltaMs = 31 * MILLIS_DAY
   const gasStations = await GasStation.find().exec()
   await gasStations.forEach(async s => {
@@ -126,20 +132,23 @@ async function removeSnapshots() {
     })
     await s.save()
   })
-  console.log("cleanup done")
+  console.log(`Cleaner: Finished at ${new Date()}`)
 }
 
 export async function updateAndNotify() {
-  console.log(`${new Date()} - updating prices`)
-  await removeSnapshots()
+  console.log(`Updater: Started at ${new Date()}`)
   const alerts: Alert[] = await fetchPrices()
-  console.log(`${new Date()} - ${alerts.length} new alerts`)
+  console.log(`Updater: ${alerts.length} new alerts`)
   await notifyAboutAlerts(alerts)
+  console.log(`Updater: Finished at ${new Date()}`)
 }
 
 
 export function configureUpdates() {
   cron.schedule(`*/${UPDATE_CYCLE} * * * *`, () => {
     updateAndNotify()
+  })
+  cron.schedule(`*/${UPDATE_CYCLE*2} * * * *`, () => {
+    removeSnapshots()
   })
 }
