@@ -17,7 +17,7 @@ const bot = TelegramBot.Instance
 async function start () {
   try {
     await mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    console.log(`Successfully connected to database: ${DB_URL}`)
+    console.log(`Successfully connected to database`)
   } catch (error) {
     console.error(error)
   }
