@@ -10,14 +10,14 @@ const MILLIS_DAY = 24 * 60 * 60 * 1000
 const MAX_GAS_STATIONS_PER_REQUEST = 10
 
 export async function fetchPrices(): Promise<Alert[]> {
-  console.log('Fetcher: getting stations')
+  console.log('Fetcher: Getting stations')
 
   let alerts: Alert[] = []
   const gasStations = await GasStation.find().exec()
   const gasStationIds = gasStations.map(station => station.stationId)
   const requestPackages = []
 
-  console.log(`Fetcher: setting up request packages for ${gasStationIds.length} stations`)
+  console.log(`Fetcher: Setting up request packages for ${gasStationIds.length} stations`)
 
   for (let i = 0; i < Math.ceil(gasStationIds.length / MAX_GAS_STATIONS_PER_REQUEST); i++) {
     requestPackages.push(gasStationIds.slice(i* MAX_GAS_STATIONS_PER_REQUEST, (i+1)* MAX_GAS_STATIONS_PER_REQUEST))
@@ -35,21 +35,22 @@ export async function fetchPrices(): Promise<Alert[]> {
       for (const station of gasStations) {
         if (prices[station.stationId] !== undefined && prices[station.stationId].status === 'open') {
           const priceData = prices[station.stationId]
+          console.log('PriceSnapshot: Updating station')
           for (const type of GAS_TYPES) {
             if (priceData[type]) {
               alerts = alerts.concat(await updatePrices(station, type, priceData[type]))
             }
           }
+          console.log('PriceSnapshot: Update done')
         }
       }
     }
   }
-  console.log('update: done')
+  console.log('Fetcher: Done')
   return alerts
 }
 
 async function updatePrices(station, type, price) {
-  console.log('PriceSnapshot: Updating station')
   const priceSnapshot = new PriceSnapshot({
     timestamp: new Date(),
     price
@@ -103,7 +104,6 @@ async function updatePrices(station, type, price) {
   })
 
   await station.save()
-  console.log('PriceSnapshot: Update done')
   return alerts
 }
 
