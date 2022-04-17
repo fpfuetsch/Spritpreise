@@ -148,7 +148,7 @@ export function configureUpdates() {
   cron.schedule(`*/${UPDATE_CYCLE} * * * *`, () => {
     updateAndNotify()
   })
-  cron.schedule(`*/${UPDATE_CYCLE*2} * * * *`, () => {
+  cron.schedule(`*/${UPDATE_CYCLE*2.5} * * * *`, () => {
     removeSnapshots()
   })
 }
