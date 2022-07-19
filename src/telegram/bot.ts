@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import Telegraf, { session } from 'telegraf'
+import Telegraf, { Context, session } from 'telegraf'
 
 import * as help from './commands/help'
 import * as menu from './commands/menu'
@@ -15,7 +15,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
 
 export class TelegramBot {
 
-  private static botInstance
+  private static botInstance: Telegraf<Context>
 
   private static commands = [
     help,
