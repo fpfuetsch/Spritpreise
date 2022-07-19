@@ -1,6 +1,6 @@
+import axios from 'axios'
 import { BASE_URL, GasStation, GasTypeStats, PriceStats, Stats } from './model'
 import { fetchPrices } from './price-update'
-import axios from 'axios'
 
 const API_KEY = process.env.API_KEY
 

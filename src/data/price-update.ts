@@ -1,11 +1,11 @@
 
-import * as cron from 'node-cron'
 import axios from 'axios'
+import * as cron from 'node-cron'
 import { notifyAboutAlerts } from '../telegram/notifications/price-update-notification'
 import { Alert, AlertLevel, BASE_URL, GasStation, GAS_TYPES, PriceSnapshot, PriceStats } from './model'
 
-const UPDATE_CYCLE: number = Number.parseInt(process.env.UPDATE_CYCLE) || 15
-const CLEANUP_CYCLE: number = Number.parseInt(process.env.CLEANUP_CYCLE) || 40
+const UPDATE_CYCLE: number = Number.parseInt(process.env.UPDATE_CYCLE, 10) || 15
+const CLEANUP_CYCLE: number = Number.parseInt(process.env.CLEANUP_CYCLE, 10) || 40
 const API_KEY = process.env.API_KEY
 const MILLIS_DAY = 24 * 60 * 60 * 1000
 const MAX_GAS_STATIONS_PER_REQUEST = 10
