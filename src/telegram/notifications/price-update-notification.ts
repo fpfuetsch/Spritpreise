@@ -1,7 +1,6 @@
 import { Alert, AlertLevel, GasStation, Subscription } from '../../data/model'
 import { getReadableGasType } from '../../utils'
 import { TelegramBot } from '../bot'
-import * as TelegramError from 'telegraf/core/network/error'
 
 export async function notifyAboutAlerts(alerts: Alert[]) {
   const bot = TelegramBot.Instance
@@ -12,12 +11,10 @@ export async function notifyAboutAlerts(alerts: Alert[]) {
         await bot.telegram
           .sendMessage(s.chatId, await generateAlertText(matches, s.stationId, s.type), {parse_mode: 'HTML'})
           .catch(async error => {
-            if (error instanceof TelegramError) {
-              if (error.code == 403 && error.description.includes("blocked")) {
-                console.log(`Bot was blocked by user: ${s.chatId}`)
-                await Subscription.deleteMany({chatId: s.chatId})
-                console.log("... subscriptions deleted!")
-              }
+            if (error.code && error.code == 403 && error.description && error.description.includes("blocked")) {
+              console.log(`Bot was blocked by user: ${s.chatId}`)
+              await Subscription.deleteMany({chatId: s.chatId})
+              console.log("... subscriptions deleted!")
             } else {
               console.log(error.message)
             }
