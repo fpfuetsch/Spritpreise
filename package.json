@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.12",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.20",
     "telegram-typings": "^5.0.0",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
