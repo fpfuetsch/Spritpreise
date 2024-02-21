@@ -7,7 +7,7 @@
     "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
-    "axios": "^0.25.0",
+    "axios": "^0.28.0",
     "core-js": "^3.19.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
