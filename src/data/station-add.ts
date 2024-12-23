@@ -8,8 +8,8 @@ export enum Response {
   CONFLICT, DONE, NOT_FOUND
 }
 
-export async function persistStation (stationId: number): Promise<Response> {
-  const alreadyExists: boolean = await GasStation.exists({stationId})
+export async function persistStation (stationId: string): Promise<Response> {
+  const alreadyExists = await GasStation.exists({stationId})
 
   if (alreadyExists) {
     return Response.CONFLICT

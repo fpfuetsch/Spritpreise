@@ -9,7 +9,7 @@ export enum AlertLevel {
 }
 
 export interface Alert {
-    stationId: number
+    stationId: string,
     type: string,
     days: number,
     lastPrice: number,

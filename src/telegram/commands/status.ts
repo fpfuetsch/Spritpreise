@@ -18,7 +18,7 @@ export function init(bot) {
   })
 }
 
-async function generateStatusText(stationId: number, type: string) {
+async function generateStatusText(stationId: string, type: string) {
   const station = await GasStation.findOne({ stationId }).exec()
   let message = `👉 ${station.name} ${station.street}\n`
   message += `💧 ${getReadableGasType(type)}\n`

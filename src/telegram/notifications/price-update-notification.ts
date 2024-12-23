@@ -23,7 +23,7 @@ export async function notifyAboutAlerts(alerts: Alert[]) {
   })
 }
 
-async function generateAlertText (alerts: Alert[], stationId: number, type: string) {
+async function generateAlertText (alerts: Alert[], stationId: string, type: string) {
   const station = await GasStation.findOne({stationId}, {name: 1, street: 1}).exec()
   let text = `🚨 ${station.name} ${station.street}\n`
   text += `💧 ${getReadableGasType(type)}\n\n`
