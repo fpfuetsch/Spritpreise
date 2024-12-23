@@ -13,7 +13,7 @@
     "dotenv": "^10.0.0",
     "dotenv-webpack": "^7.0.3",
     "express": "^4.21.1",
-    "mongoose": "^5.13.20",
+    "mongoose": "^8.8.3",
     "node-cron": "^2.0.3",
     "telegraf": "^3.39.0",
     "webpack": "^5.94.0"
