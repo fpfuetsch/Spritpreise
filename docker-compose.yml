@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
   db:
-    image: mongo:latest
+    image: mongo:6
     container_name: spritpreise-db
     restart: always
     volumes:
