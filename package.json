@@ -16,7 +16,7 @@
     "mongoose": "^8.9.5",
     "node-cron": "^2.0.3",
     "telegraf": "^3.39.0",
-    "webpack": "^5.94.0"
+    "webpack": "^5.105.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.12",
