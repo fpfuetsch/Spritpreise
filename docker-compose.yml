@@ -1,10 +1,9 @@
 services:
   spritpreise:
-    image: spritpreise
-    container_name: spritpreise-app
-    restart: always
     build:
       context: ./
+    container_name: spritpreise-app
+    restart: always
     depends_on:
       - db
     ports:
