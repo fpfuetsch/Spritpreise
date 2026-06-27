@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'
-dotenv.config()
+dotenv.config({ quiet: true })
 
 import Telegraf, { Context, session } from 'telegraf'
 
