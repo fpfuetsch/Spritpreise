@@ -13,8 +13,15 @@ export async function findStationsByLocation(location) {
 
 export async function findStationsByText(text) {
   const urlLocation = `${GEOCODING_BASE_URL}?q=${encodeURIComponent(text)}&format=json&countrycodes=de`
-  const data = await axios(urlLocation).then(result => result.data).catch(err => console.error(err))
-  const res = data[0]
+  const data = await axios.get(urlLocation, {
+    headers: {
+      'User-Agent': 'spritpreis-bot/1.0'
+    }
+  }).then(result => result.data).catch(err => {
+    console.error('Nominatim request failed', err?.response?.status || err)
+    return []
+  })
+  const res = Array.isArray(data) ? data[0] : undefined
   return {
     location: res ? res.display_name : 'error',
     stations: res ? await findStationsByLocation({latitude: res.lat, longitude: res.lon}) : []
