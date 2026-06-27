@@ -1,3 +1,5 @@
 node_modules/
 data/
+dist/
+.github/
 npm-debug.log

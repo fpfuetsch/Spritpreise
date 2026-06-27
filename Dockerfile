@@ -1,22 +1,30 @@
-FROM node:24.15-alpine
+ARG NODE_IMAGE=node:24.18-alpine
 
-# Create app directory
+FROM ${NODE_IMAGE} AS builder
+
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy dependency manifests first to maximize layer cache hits.
 COPY package*.json ./
-
 RUN npm ci
-# If you are building your code for production
-# RUN npm ci --only=production
 
-# Bundle app source
-COPY . .
+# Copy only files required for compilation.
+COPY tsconfig.json webpack.config.js ./
+COPY src ./src
 
-# Build the app
 RUN npm run build
 
-# Run the app
-CMD [ "node", "dist/server.js" ]
+FROM ${NODE_IMAGE} AS runtime
+
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
+
+# Install production dependencies only.
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy compiled output from builder stage.
+COPY --from=builder /usr/src/app/dist ./dist
+
+EXPOSE 80
+CMD ["node", "dist/server.js"]
