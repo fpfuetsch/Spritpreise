@@ -17,37 +17,37 @@ export interface Alert {
     level: AlertLevel
 }
 
-const subscriptionSchema = new Schema({
+const subscriptionSchema = new Schema<any>({
   stationId: String,
   type: String,
   chatId: Number,
   active: Boolean
 })
 
-const priceSnapshotSchema = new Schema({
+const priceSnapshotSchema = new Schema<any>({
   timestamp: Date,
   price: Number
 })
 
-const priceStatsSchema = new Schema({
+const priceStatsSchema = new Schema<any>({
   1: Number,
   3: Number,
   7: Number,
   30: Number
 })
 
-const gasTypeStatsSchema = new Schema({
+const gasTypeStatsSchema = new Schema<any>({
   lowest: priceStatsSchema,
   average: priceStatsSchema,
 })
 
-const statsSchema = new Schema({
+const statsSchema = new Schema<any>({
   e5: gasTypeStatsSchema,
   e10: gasTypeStatsSchema,
   diesel: gasTypeStatsSchema,
 })
 
-const gasStationSchema = new Schema({
+const gasStationSchema = new Schema<any>({
   stationId: String,
   name: String,
   brand: String,
@@ -61,9 +61,9 @@ const gasStationSchema = new Schema({
   stats: statsSchema
 })
 
-export const PriceSnapshot = mongoose.model('PriceSnapshot', priceSnapshotSchema)
-export const Stats = mongoose.model('Stats', statsSchema)
-export const GasTypeStats = mongoose.model('GasTypeStats', gasTypeStatsSchema)
-export const PriceStats = mongoose.model('LowestPriceStats', priceStatsSchema)
-export const GasStation = mongoose.model('GasStation', gasStationSchema)
-export const Subscription = mongoose.model('Subscription', subscriptionSchema)
+export const PriceSnapshot: any = mongoose.model('PriceSnapshot', priceSnapshotSchema)
+export const Stats: any = mongoose.model('Stats', statsSchema)
+export const GasTypeStats: any = mongoose.model('GasTypeStats', gasTypeStatsSchema)
+export const PriceStats: any = mongoose.model('LowestPriceStats', priceStatsSchema)
+export const GasStation: any = mongoose.model('GasStation', gasStationSchema)
+export const Subscription: any = mongoose.model('Subscription', subscriptionSchema)
