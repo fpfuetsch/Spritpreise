@@ -12,9 +12,9 @@ export function init (bot) {
       const buttons = []
       for (const sub of subs) {
         const station = await GasStation.findOne({stationId: sub.stationId}, {brand: 1, street: 1, city: 1})
-        buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.city}, ${getReadableGasType(sub.type)}`, `subcb_${sub.stationId}_${sub.type}`)])
+        buttons.push([Markup.button.callback(`${station.brand} ${station.street} ${station.city}, ${getReadableGasType(sub.type)}`, `subcb_${sub.stationId}_${sub.type}`)])
       }
-      const subsFoundMenu = Markup.inlineKeyboard(buttons).extra()
+      const subsFoundMenu = Markup.inlineKeyboard(buttons)
       await ctx.editMessageText('Folgende Abonnements sind für dich registriert', subsFoundMenu)
     }
   })
@@ -24,9 +24,9 @@ export function init (bot) {
     const type = ctx.update.callback_query.data.split('_')[2]
 
     const subDeleteMenu = Markup.inlineKeyboard([
-      [ Markup.callbackButton('Löschen! ❌', `subdelcb_${stationId}_${type}`),
+      [ Markup.button.callback('Löschen! ❌', `subdelcb_${stationId}_${type}`),
       ],
-    ]).extra()
+    ])
 
       ctx.editMessageText('Willst du das Abonnement wirklich löschen?', subDeleteMenu)
   })

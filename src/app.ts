@@ -28,11 +28,11 @@ async function start () {
 
   if (WEBHOOK_HOST) {
     app.use(bot.webhookCallback(WEBHOOK_PATH))
-    bot.telegram.setWebhook(`${WEBHOOK_HOST}${WEBHOOK_PATH}`)
+    await bot.telegram.setWebhook(`${WEBHOOK_HOST}${WEBHOOK_PATH}`)
     console.log(`Bot is using webhook for host '${WEBHOOK_HOST}!'`)
   } else {
-    bot.telegram.deleteWebhook()
-    bot.startPolling(30, 100)
+    await bot.telegram.deleteWebhook()
+    await bot.launch()
     console.log(`Bot is using polling mode!`)
   }
 

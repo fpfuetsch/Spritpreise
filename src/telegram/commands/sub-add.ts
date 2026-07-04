@@ -1,4 +1,4 @@
-import { Extra, Markup } from 'telegraf'
+import { Markup } from 'telegraf'
 import { GasStation, Subscription } from '../../data/model'
 import { persistStation } from '../../data/station-add'
 import { findStationsByLocation, findStationsByText } from '../../data/station-find'
@@ -9,13 +9,13 @@ export function init (bot) {
 
   const stationMenu = Markup.inlineKeyboard([
     [
-      Markup.callbackButton('Liste 📄', 'list_station'),
-      Markup.callbackButton('Umkreis 📍', 'find_station_by_location'),
+      Markup.button.callback('Liste 📄', 'list_station'),
+      Markup.button.callback('Umkreis 📍', 'find_station_by_location'),
     ],
     [
-      Markup.callbackButton('Text 🔍', 'find_station_by_text'),
+      Markup.button.callback('Text 🔍', 'find_station_by_text'),
     ]
-  ]).extra()
+  ])
 
   bot.action('sub_add_menu', async (ctx) => {
     ctx.editMessageText('Tankstelle finden mit...', stationMenu)
@@ -31,12 +31,12 @@ export function init (bot) {
   })
 
   bot.action('find_station_by_location', async (ctx) => {
-    await ctx.reply('Bitte schicke mir deinen Standort, sodass ich nach Tankstellen in deiner Umgebung suchen kann.', Extra.markup((markup) => {
-      return markup
-        .keyboard([
-          markup.locationRequestButton('Standort schicken')
-        ])
-    }))
+    await ctx.reply(
+      'Bitte schicke mir deinen Standort, sodass ich nach Tankstellen in deiner Umgebung suchen kann.',
+      Markup.keyboard([
+        [Markup.button.locationRequest('Standort schicken')]
+      ]).resize().oneTime()
+    )
   })
 
   bot.action('find_station_by_text', async (ctx) => {
@@ -74,12 +74,12 @@ export function init (bot) {
     const gasTypeMenu = Markup.inlineKeyboard(
       [
         [
-          Markup.callbackButton('Super', `sfcb_${stationId}_e5`),
-          Markup.callbackButton('E10', `sfcb_${stationId}_e10`),
-          Markup.callbackButton('Diesel', `sfcb_${stationId}_diesel`)
+          Markup.button.callback('Super', `sfcb_${stationId}_e5`),
+          Markup.button.callback('E10', `sfcb_${stationId}_e10`),
+          Markup.button.callback('Diesel', `sfcb_${stationId}_diesel`)
         ]
       ]
-    ).extra()
+    )
     await ctx.editMessageText('Kraftstoff auswählen', gasTypeMenu)
   })
 
@@ -110,8 +110,8 @@ export function init (bot) {
     const buttons = []
     for (let i = 0; i < Math.min(stations.length, MAX_STATION_COUNT); i++) {
       const station = stations[i]
-      buttons.push([Markup.callbackButton(`${station.brand} ${station.street} ${station.place || station.city}`, `scb_${station.stationId || station.id}`)])
+      buttons.push([Markup.button.callback(`${station.brand} ${station.street} ${station.place || station.city}`, `scb_${station.stationId || station.id}`)])
     }
-    return Markup.inlineKeyboard(buttons).extra()
+    return Markup.inlineKeyboard(buttons)
   }
 }
