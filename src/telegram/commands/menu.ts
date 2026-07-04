@@ -4,8 +4,8 @@ import { Subscription } from '../../data/model'
 export function init (bot) {
 
   const basicMainMenu = [
-    Markup.callbackButton('Erstellen 🌟', 'sub_add_menu'),
-    Markup.callbackButton('Löschen ❌', 'sub_remove_menu')
+    Markup.button.callback('Erstellen 🌟', 'sub_add_menu'),
+    Markup.button.callback('Löschen ❌', 'sub_remove_menu')
   ]
 
   bot.command('menu', async (ctx) => {
@@ -31,13 +31,13 @@ export function init (bot) {
     const mainMenuButtons = [
       [ ...basicMainMenu ],
       subs.length > 0 ?
-        [ notificationsActive ? Markup.callbackButton('Pausieren ⏸', `subpp_pause`) :
-                                Markup.callbackButton('Fortsetzen ▶', `subpp_play`) ]
+        [ notificationsActive ? Markup.button.callback('Pausieren ⏸', `subpp_pause`) :
+                                Markup.button.callback('Fortsetzen ▶', `subpp_play`) ]
       : []
     ]
     return {
              message: 'Was kann ich für dich tun? Du kannst Benachrichtigungen...',
-             keyboard: Markup.inlineKeyboard(mainMenuButtons).extra()
+             keyboard: Markup.inlineKeyboard(mainMenuButtons)
            }
   }
 

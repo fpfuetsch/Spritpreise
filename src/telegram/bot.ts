@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config({ quiet: true })
 
-import Telegraf, { Context, session } from 'telegraf'
+import { Context, session, Telegraf } from 'telegraf'
 
 import * as help from './commands/help'
 import * as menu from './commands/menu'
