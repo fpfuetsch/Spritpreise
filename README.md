@@ -66,6 +66,55 @@ If WEBHOOK_HOST is set, the bot uses webhook mode. If not, it uses polling mode.
 
 	docker compose down
 
+## MongoDB Major Upgrade (Docker Compose)
+
+If you run with persisted data in `./data`, upgrade MongoDB major versions step by step.
+Do not skip major versions. Always upgrade `N -> N+1`.
+
+Example path:
+
+1. 6.x -> 7.x
+2. 7.x -> 8.x
+
+### 1) Prepare and back up
+
+1. Stop app writes during migration:
+
+	docker compose stop spritpreise
+
+2. Create a backup archive from the running DB:
+
+	docker compose exec db sh -lc 'mongodump --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --archive=/tmp/pre-upgrade.archive --gzip'
+	docker compose cp db:/tmp/pre-upgrade.archive ./pre-upgrade.archive.gz
+
+### 2) Upgrade one major step (`N -> N+1`)
+
+1. In `docker-compose.yml`, change the DB image from your current major to the next major:
+
+	image: mongo:N.0
+
+to:
+
+	image: mongo:N+1.0
+
+2. Restart DB and verify startup logs:
+
+	docker compose up -d db
+	docker compose logs --tail=100 db
+
+3. Set Feature Compatibility Version (FCV) to the same target major:
+
+	docker compose exec db sh -lc 'mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.adminCommand({ setFeatureCompatibilityVersion: \"N+1.0\" })"'
+
+4. Run quick checks (application logs, bot actions, write operations).
+
+5. Repeat this section until you reach the desired major version.
+
+### 3) Restart app and validate
+
+	docker compose up -d spritpreise
+	docker compose logs --tail=100 spritpreise
+
 ## Project Structure
 
 - src/data: Data access, models, station search, and update logic
