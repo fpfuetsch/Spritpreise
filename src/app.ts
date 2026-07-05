@@ -1,5 +1,5 @@
-import * as cors from 'cors'
-import * as express from 'express'
+import cors = require('cors')
+import express = require('express')
 import * as mongoose from 'mongoose'
 import { configureUpdates } from './data/price-update'
 import { TelegramBot } from './telegram/bot'
