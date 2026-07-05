@@ -40,6 +40,9 @@ export function init (bot) {
   })
 
   bot.action('find_station_by_text', async (ctx) => {
+    if (!ctx.session) {
+      ctx.session = {}
+    }
     ctx.session.locationRequest = true
     await ctx.reply('Bitte schicke mir einen Ort in Deutschland in dessen Umgebung ich nach Tankstellen suche soll.')
   })
@@ -55,7 +58,8 @@ export function init (bot) {
   })
 
   bot.on('text', async (ctx) => {
-    if (ctx.session.locationRequest) {
+    if (ctx.session?.locationRequest) {
+      ctx.session.locationRequest = false
       const res = await findStationsByText(ctx.message.text)
       if (res.location === 'error') {
         await ctx.reply(`Keine Tankstellen für den Ort ${ctx.message.text}' gefunden! 🤷`)
