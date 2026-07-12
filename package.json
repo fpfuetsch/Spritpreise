@@ -26,6 +26,6 @@
     "ts-node": "^10.9.2",
     "tslint": "^6.0.0",
     "typescript": "^6.0.3",
-    "webpack-cli": "^7.1.0"
+    "webpack-cli": "^7.2.1"
   }
 }
