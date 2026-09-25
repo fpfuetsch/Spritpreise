@@ -19,7 +19,7 @@
     "webpack": "^5.111.0"
   },
   "devDependencies": {
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.2",
     "nodemon": "^3.1.14",
     "telegram-typings": "^5.0.0",
     "ts-loader": "^9.6.2",
