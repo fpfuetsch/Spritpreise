@@ -26,5 +26,8 @@ RUN npm ci --omit=dev && npm cache clean --force
 # Copy compiled output from builder stage.
 COPY --from=builder /usr/src/app/dist ./dist
 
+# Switch to a non-root user for security.
+USER node
+
 EXPOSE 80
 CMD ["node", "dist/server.js"]
