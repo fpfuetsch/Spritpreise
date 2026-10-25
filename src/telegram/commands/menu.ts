@@ -13,7 +13,7 @@ export function init (bot) {
     ctx.reply(menu.message, menu.keyboard)
   })
 
-  bot.action(new RegExp('subpp_\S*'), async (ctx) => {
+  bot.action(/subpp_\S*/, async (ctx) => {
     const active = ctx.update.callback_query.data.split('_')[1] === 'play'
     const subs = await Subscription.find({chatId: ctx.chat.id, active: !active}).exec()
 

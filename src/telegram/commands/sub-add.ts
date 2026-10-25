@@ -73,7 +73,7 @@ export function init (bot) {
     }
   })
 
-  bot.action(new RegExp('scb_\S*'), async (ctx) => {
+  bot.action(/scb_\S*/, async (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const gasTypeMenu = Markup.inlineKeyboard(
       [
@@ -87,7 +87,7 @@ export function init (bot) {
     await ctx.editMessageText('Kraftstoff auswählen', gasTypeMenu)
   })
 
-  bot.action(new RegExp('sfcb_\S*'), async (ctx) => {
+  bot.action(/sfcb_\S*/, async (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const type = ctx.update.callback_query.data.split('_')[2]
 

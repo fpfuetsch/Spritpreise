@@ -19,7 +19,7 @@ export function init (bot) {
     }
   })
 
-  bot.action(new RegExp('subcb_\S*'), (ctx) => {
+  bot.action(/subcb_\S*/, (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const type = ctx.update.callback_query.data.split('_')[2]
 
@@ -31,7 +31,7 @@ export function init (bot) {
       ctx.editMessageText('Willst du das Abonnement wirklich löschen?', subDeleteMenu)
   })
 
-  bot.action(new RegExp('subdelcb_\S*'), async (ctx) => {
+  bot.action(/subdelcb_\S*/, async (ctx) => {
     const stationId = ctx.update.callback_query.data.split('_')[1]
     const type = ctx.update.callback_query.data.split('_')[2]
 
